@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AGRONET.Api/AGRONET.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Auth/">
+    <Project Path="src/Modules/Auth/AGRONET.Auth.Application/AGRONET.Auth.Application.csproj" Id="98b012f5-19aa-40fe-8785-4a50810aaa59" />
+    <Project Path="src/Modules/Auth/AGRONET.Auth.Domain/AGRONET.Auth.Domain.csproj" Id="69eee88a-962c-43b7-aca8-3fa7cb0bbb90" />
+    <Project Path="src/Modules/Auth/AGRONET.Auth.Infrastructure/AGRONET.Auth.Infrastructure.csproj" Id="86b67c6a-e607-4bb2-ace3-96765ccf1677" />
+  </Folder>
+</Solution>
