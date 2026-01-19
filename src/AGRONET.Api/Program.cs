@@ -1,5 +1,7 @@
 ﻿using AGRONET.Auth.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AGRONET.FichaSalida.Infrastructure;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -47,6 +49,9 @@ builder.Services.AddSwaggerGen(c =>
 
 //  registra módulo Auth (Infrastructure + Application)
 builder.Services.AddAgronetAuth(builder.Configuration);
+builder.Services.AddAgronetFichaSalida();
+
+
 
 //  JWT Bearer
 var jwt = builder.Configuration.GetSection("Jwt");

@@ -119,7 +119,7 @@ namespace AGRONET.Api.Controllers
             if (req is null || string.IsNullOrWhiteSpace(req.RefreshToken))
                 return BadRequest(new { message = "RefreshToken es requerido." });
 
-            // ✅ 1) Intenta NameIdentifier (lo más común)
+            //  1) Intenta NameIdentifier (lo más común)
             var idStr =
                  User.FindFirstValue(ClaimTypes.NameIdentifier) // ✅ preferido
                  ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub)

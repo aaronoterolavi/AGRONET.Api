@@ -28,17 +28,17 @@ namespace AGRONET.Auth.Infrastructure.Security
         public string CreateAccessToken(UserDto user)
         {
             var claims = new List<Claim>
-    {
-        // ✅ Estándar JWT
-        new(JwtRegisteredClaimNames.Sub, user.IdUsuario.ToString()),
+            {
+                // ✅ Estándar JWT
+                new(JwtRegisteredClaimNames.Sub, user.IdUsuario.ToString()),
 
-        // ✅ Estándar .NET para identificar usuario
-        new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
+                // ✅ Estándar .NET para identificar usuario
+                new(ClaimTypes.NameIdentifier, user.IdUsuario.ToString()),
 
-        new("username", user.Username),
-        new("dni", user.DniNorm ?? ""),
-        new(ClaimTypes.Role, user.RolCodigo ?? "USUARIO")
-    };
+                new("username", user.Username),
+                new("dni", user.DniNorm ?? ""),
+                new(ClaimTypes.Role, user.RolCodigo ?? "USUARIO")
+            };
 
             var key = new SymmetricSecurityKey(_signingKeyBytes);
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
