@@ -14,9 +14,33 @@ namespace AGRONET.FichaSalida.Application.Interfaces
             string estado,
             CancellationToken ct = default);
 
-        Task<IReadOnlyList<FichaSalidaHistorialDto>> ListarHistorialAsync(
-            string usuario,
-            string estadoAutorizacion,
+        Task<(IReadOnlyList<FichaSalidaHistorialDto> Items, int TotalRows)> ListarHistorialAsync(
+     string dni,
+     string estadoAutorizacion,
+     int pageSize,
+     int pageNumber,
+     CancellationToken ct = default);
+
+        Task<IReadOnlyList<FichaSalidaEstadoDto>> ListarEstadosAsync(CancellationToken ct = default);
+
+        Task<(int? IdFichaSalida, string MensajeSalida)> InsertarAsync(
+        string dni,
+        FichaSalidaCrearRequestDto req,
+        CancellationToken ct = default);
+    }
+
+    public interface IFichaSalidaAdjuntoRepository
+    {
+        Task<long> InsertarAdjuntoAsync(
+            int idFichaSalida,
+            string fileName,
+            string? originalName,
+            string? contentType,
+            long fileSizeBytes,
+            string storageMode,
+            string storagePath,
+            byte[]? sha256,
+            string? createdByDni,
             CancellationToken ct = default);
     }
 }

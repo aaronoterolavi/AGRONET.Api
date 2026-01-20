@@ -49,7 +49,9 @@ builder.Services.AddSwaggerGen(c =>
 
 //  registra módulo Auth (Infrastructure + Application)
 builder.Services.AddAgronetAuth(builder.Configuration);
-builder.Services.AddAgronetFichaSalida();
+builder.Services.AddAgronetFichaSalida(builder.Configuration);
+
+//builder.Services.AddAgronetFichaSalida(builder.Configuration);
 
 
 

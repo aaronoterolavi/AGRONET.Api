@@ -45,23 +45,76 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
             return rows.AsList();
         }
 
-        public async Task<IReadOnlyList<FichaSalidaHistorialDto>> ListarHistorialAsync(
-            string usuario,
-            string estadoAutorizacion,
+        public async Task<(IReadOnlyList<FichaSalidaHistorialDto> Items, int TotalRows)> ListarHistorialAsync(
+    string dni,
+    string estadoAutorizacion,
+    int pageSize,
+    int pageNumber,
+    CancellationToken ct = default)
+        {
+            using var con = _factory.CreateBdAgronetConnection();
+
+            var p = new DynamicParameters();
+            p.Add("@usuario", dni, DbType.String);
+            p.Add("@estadoAutorizacion", estadoAutorizacion, DbType.String);
+            p.Add("@PageSize", pageSize, DbType.Int32);
+            p.Add("@PageNumber", pageNumber, DbType.Int32);
+
+            using var multi = await con.QueryMultipleAsync(
+                "dbo.USP_FichaSalida_Historial_PorUsuarioEstado",
+                p,
+                commandType: CommandType.StoredProcedure);
+
+            var items = (await multi.ReadAsync<FichaSalidaHistorialDto>()).AsList();
+            var total = await multi.ReadSingleAsync<int>(); // TotalRows (segundo resultset)
+
+            return (items, total);
+        }
+
+        public async Task<IReadOnlyList<FichaSalidaEstadoDto>> ListarEstadosAsync(CancellationToken ct = default)
+        {
+            using var con = _factory.CreateBdAgronetConnection();
+
+            var rows = await con.QueryAsync<FichaSalidaEstadoDto>(
+                "dbo.USP_ListarFichaSalidaEstado",
+                commandType: CommandType.StoredProcedure);
+
+            return rows.AsList();
+        }
+
+        private sealed class InsertResultRow
+        {
+            public int? IdFichaSalida { get; set; }
+            public string? MensajeSalida { get; set; }
+        }
+
+        public async Task<(int? IdFichaSalida, string MensajeSalida)> InsertarAsync(
+            string dni,
+            FichaSalidaCrearRequestDto req,
             CancellationToken ct = default)
         {
             using var con = _factory.CreateBdAgronetConnection();
 
             var p = new DynamicParameters();
-            p.Add("@usuario", usuario, DbType.String);
-            p.Add("@estadoAutorizacion", estadoAutorizacion, DbType.String);
+            p.Add("@usuario", dni, DbType.String);
+            p.Add("@cod_area", req.CodArea, DbType.String);
+            p.Add("@cod_per", req.CodPer, DbType.String);
+            p.Add("@cod_tipo_empleado", req.CodTipoEmpleado, DbType.String);
+            p.Add("@destino", req.Destino, DbType.String);
+            p.Add("@motivo", req.Motivo, DbType.String);
+            p.Add("@fechaInicio", req.FechaInicio.ToDateTime(TimeOnly.MinValue), DbType.Date);
+            p.Add("@horaInicio", req.HoraInicio, DbType.String);
+            p.Add("@fechaFin", req.FechaFin.ToDateTime(TimeOnly.MinValue), DbType.Date);
+            p.Add("@horaFin", req.HoraFin, DbType.String);
+            p.Add("@cod_destinoDetalle", req.CodDestinoDetalle, DbType.String);
 
-            var rows = await con.QueryAsync<FichaSalidaHistorialDto>(
-                "dbo.USP_FichaSalida_Historial_PorUsuarioEstado",
+            var row = await con.QuerySingleAsync<InsertResultRow>(
+                "dbo.USP_tbl_FichaSalida_insertar",
                 p,
                 commandType: CommandType.StoredProcedure);
 
-            return rows.AsList();
+            return (row.IdFichaSalida, row.MensajeSalida ?? "");
         }
+
     }
 }

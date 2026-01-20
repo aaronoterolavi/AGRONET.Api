@@ -1,4 +1,5 @@
-﻿using AGRONET.FichaSalida.Application.Services;
+﻿using AGRONET.FichaSalida.Application.Contracts.FichaSalida;
+using AGRONET.FichaSalida.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -15,6 +16,37 @@ public sealed class FichaSalidaController : ControllerBase
     public FichaSalidaController(IFichaSalidaService svc)
     {
         _svc = svc;
+    }
+
+    [HttpPost("crear")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Crear([FromForm] FichaSalidaCrearForm form, CancellationToken ct)
+    {
+        var dni = User.FindFirstValue("dni");
+        if (string.IsNullOrWhiteSpace(dni))
+            return Unauthorized(new { message = "Token sin claim 'dni'." });
+
+        // Map Form -> RequestDto (sin IFormFile)
+        var req = new FichaSalidaCrearRequestDto
+        {
+            CodArea = form.CodArea,
+            CodPer = form.CodPer,
+            CodTipoEmpleado = form.CodTipoEmpleado,
+            Destino = form.Destino,
+            Motivo = form.Motivo,
+            FechaInicio = form.FechaInicio,
+            HoraInicio = form.HoraInicio,
+            FechaFin = form.FechaFin,
+            HoraFin = form.HoraFin,
+            CodDestinoDetalle = form.CodDestinoDetalle
+        };
+
+        var res = await _svc.CrearAsync(dni, req, form.Documento, ct);
+
+        if (res.IdFichaSalida is null)
+            return UnprocessableEntity(res);
+
+        return Ok(res);
     }
 
     // GET: /api/fichasalida/tipos
@@ -35,15 +67,25 @@ public sealed class FichaSalidaController : ControllerBase
 
     // GET: /api/fichasalida/historial?estadoAutorizacion=APROBADA
     [HttpGet("historial")]
-    public async Task<IActionResult> Historial([FromQuery] string estadoAutorizacion, CancellationToken ct)
+    public async Task<IActionResult> Historial(
+      [FromQuery] string estadoAutorizacion,
+      [FromQuery] int pageSize = 20,
+      [FromQuery] int pageNumber = 0,
+      CancellationToken ct = default)
     {
-        // ✅ usuario sale del token (no lo recibe por query)
-        //  var username = User.FindFirstValue("username");
         var dni = User.FindFirstValue("dni");
         if (string.IsNullOrWhiteSpace(dni))
             return Unauthorized(new { message = "Token sin claim 'dni'." });
 
-        var data = await _svc.ListarHistorialPorDniAsync(dni, estadoAutorizacion, ct);
+        var data = await _svc.ListarHistorialPorDniAsync(dni, estadoAutorizacion, pageSize, pageNumber, ct);
         return Ok(data);
     }
+
+    [HttpGet("estados")]
+    public async Task<IActionResult> ListarEstados(CancellationToken ct)
+    {
+        var data = await _svc.ListarEstadosAsync(ct);
+        return Ok(data);
+    }
+
 }

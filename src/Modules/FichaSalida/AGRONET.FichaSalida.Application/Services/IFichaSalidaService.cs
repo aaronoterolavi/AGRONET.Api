@@ -1,4 +1,6 @@
-﻿using AGRONET.FichaSalida.Application.Contracts.FichaSalida;
+﻿using AGRONET.FichaSalida.Application.Contracts.Common;
+using AGRONET.FichaSalida.Application.Contracts.FichaSalida;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +15,19 @@ namespace AGRONET.FichaSalida.Application.Services
             string codFichaSalidaTipo,
             CancellationToken ct = default);
 
-        Task<IReadOnlyList<FichaSalidaHistorialDto>> ListarHistorialPorDniAsync(
-     string dni,
-     string estadoAutorizacion,
-     CancellationToken ct = default);
+        Task<PagedResultDto<FichaSalidaHistorialDto>> ListarHistorialPorDniAsync(
+      string dni,
+      string estadoAutorizacion,
+      int pageSize,
+      int pageNumber,
+      CancellationToken ct = default);
+
+        Task<IReadOnlyList<FichaSalidaEstadoDto>> ListarEstadosAsync(CancellationToken ct = default);
+
+        Task<FichaSalidaCrearResponseDto> CrearAsync(
+        string dni,
+        FichaSalidaCrearRequestDto req,
+        IFormFile? documento,
+        CancellationToken ct = default);
     }
 }
