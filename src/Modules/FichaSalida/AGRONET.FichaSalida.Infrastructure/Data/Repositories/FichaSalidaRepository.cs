@@ -1,4 +1,5 @@
 ﻿using AGRONET.Auth.Infrastructure.Data; // reutilizas tu ISqlConnectionFactory de Auth (o muévelo a Common)
+using AGRONET.FichaSalida.Application.Contracts.Common;
 using AGRONET.FichaSalida.Application.Contracts.FichaSalida;
 using AGRONET.FichaSalida.Application.Interfaces;
 using Dapper;
@@ -114,6 +115,36 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
                 commandType: CommandType.StoredProcedure);
 
             return (row.IdFichaSalida, row.MensajeSalida ?? "");
+        }
+
+        public async Task<OperacionResultadoDto> AnularAsync(int id, CancellationToken ct = default)
+        {
+            using var con = _factory.CreateBdAgronetConnection();
+
+            var p = new DynamicParameters();
+            p.Add("@id", id, DbType.Int32);
+
+            return await con.QueryFirstAsync<OperacionResultadoDto>(
+                "dbo.USP_tbl_FichaSalida_Anular",
+                p,
+                commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
+            int id,
+            string estadoAutorizacion,
+            CancellationToken ct = default)
+        {
+            using var con = _factory.CreateBdAgronetConnection();
+
+            var p = new DynamicParameters();
+            p.Add("@id", id, DbType.Int32);
+            p.Add("@estadoAutorizacion", estadoAutorizacion, DbType.String);
+
+            return await con.QueryFirstAsync<OperacionResultadoDto>(
+                "dbo.USP_tbl_FichaSalida_ActualizarEstadoAutorizacion",
+                p,
+                commandType: CommandType.StoredProcedure);
         }
 
     }
