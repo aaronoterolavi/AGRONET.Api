@@ -26,6 +26,10 @@ namespace AGRONET.Auth.Application.Contracts.Auth
         public string? ApeMaterno { get; set; }
         public string? Correo { get; set; }
         public string RolCodigo { get; set; } = default!;
+        public string? CodArea { get; set; }
+        public string? descArea { get; set; }
+        public string? CodTrabajador { get; set; }
+        public string? CodTipoEmpleado { get; set; }
         public bool Activo { get; set; }
     }
 }
