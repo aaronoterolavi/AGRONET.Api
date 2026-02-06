@@ -29,5 +29,12 @@ namespace AGRONET.FichaSalida.Application.Services
         FichaSalidaCrearRequestDto req,
         IFormFile? documento,
         CancellationToken ct = default);
+
+        Task<OperacionResultadoDto> AnularAsync(int id, CancellationToken ct = default);
+
+        Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
+            int id,
+            string estadoAutorizacion,
+            CancellationToken ct = default);
     }
 }

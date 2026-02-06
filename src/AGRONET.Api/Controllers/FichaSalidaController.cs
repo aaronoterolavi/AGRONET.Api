@@ -88,4 +88,38 @@ public sealed class FichaSalidaController : ControllerBase
         return Ok(data);
     }
 
+    [Authorize]
+    [HttpPut("anular")]
+    public async Task<IActionResult> Anular([FromBody] FichaSalidaAnularRequestDto req, CancellationToken ct)
+    {
+        if (req is null || req.Id <= 0)
+            return BadRequest(new { message = "Id inválido." });
+
+        var res = await _svc.AnularAsync(req.Id, ct);
+
+        if (res.Codigo != 1)
+            return UnprocessableEntity(res);
+
+        return Ok(res);
+    }
+
+    [Authorize]
+    [HttpPut("actualizar-estado")]
+    public async Task<IActionResult> ActualizarEstado([FromBody] FichaSalidaActualizarEstadoRequestDto req, CancellationToken ct)
+    {
+        if (req is null || req.Id <= 0)
+            return BadRequest(new { message = "Id inválido." });
+
+        if (string.IsNullOrWhiteSpace(req.EstadoAutorizacion))
+            return BadRequest(new { message = "EstadoAutorizacion es requerido." });
+
+        var res = await _svc.ActualizarEstadoAutorizacionAsync(req.Id, req.EstadoAutorizacion.Trim(), ct);
+
+        if (res.Codigo != 1)
+            return UnprocessableEntity(res);
+
+        return Ok(res);
+    }
+
+
 }

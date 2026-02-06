@@ -71,6 +71,7 @@ namespace AGRONET.FichaSalida.Application.Services
         public Task<IReadOnlyList<FichaSalidaEstadoDto>> ListarEstadosAsync(CancellationToken ct = default)
        => _repo.ListarEstadosAsync(ct);
 
+
         public async Task<FichaSalidaCrearResponseDto> CrearAsync(
         string dni,
         FichaSalidaCrearRequestDto req,
@@ -168,6 +169,17 @@ namespace AGRONET.FichaSalida.Application.Services
                 TieneAdjunto = true,
                 IdAdjunto = idAdj
             };
+
+
         }
+
+        public Task<OperacionResultadoDto> AnularAsync(int id, CancellationToken ct = default)
+         => _repo.AnularAsync(id, ct);
+
+        public Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
+            int id,
+            string estadoAutorizacion,
+            CancellationToken ct = default)
+            => _repo.ActualizarEstadoAutorizacionAsync(id, estadoAutorizacion, ct);
     }
 }

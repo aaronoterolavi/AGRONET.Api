@@ -1,4 +1,5 @@
-﻿using AGRONET.FichaSalida.Application.Contracts.FichaSalida;
+﻿using AGRONET.FichaSalida.Application.Contracts.Common;
+using AGRONET.FichaSalida.Application.Contracts.FichaSalida;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,6 +28,13 @@ namespace AGRONET.FichaSalida.Application.Interfaces
         string dni,
         FichaSalidaCrearRequestDto req,
         CancellationToken ct = default);
+
+        Task<OperacionResultadoDto> AnularAsync(int id, CancellationToken ct = default);
+
+        Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
+            int id,
+            string estadoAutorizacion,
+            CancellationToken ct = default);
     }
 
     public interface IFichaSalidaAdjuntoRepository
@@ -43,4 +51,6 @@ namespace AGRONET.FichaSalida.Application.Interfaces
             string? createdByDni,
             CancellationToken ct = default);
     }
-}
+
+   
+    }
