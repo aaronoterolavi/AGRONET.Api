@@ -181,5 +181,28 @@ namespace AGRONET.FichaSalida.Application.Services
             string estadoAutorizacion,
             CancellationToken ct = default)
             => _repo.ActualizarEstadoAutorizacionAsync(id, estadoAutorizacion, ct);
+
+
+        public Task<PagedResultDto<FichaSalidaAutorizacionDto>> ListarAsync(
+            string codArea,
+            string dniAutorizador,
+            string codTipoEmpleado,
+            FichaSalidaListarAutorizacionesRequestDto req,
+            CancellationToken ct = default)
+        {
+            // Validaciones mínimas
+            if (string.IsNullOrWhiteSpace(codArea)) throw new ArgumentException("codArea requerido");
+            if (string.IsNullOrWhiteSpace(dniAutorizador)) throw new ArgumentException("dni requerido");
+            if (string.IsNullOrWhiteSpace(codTipoEmpleado)) throw new ArgumentException("codTipoEmpleado requerido");
+
+            return _repo.ListarAsync(
+                codArea,
+                dniAutorizador,
+                codTipoEmpleado,
+                req.EstadoAutorizacion,
+                req.PageNumber,
+                req.PageSize,
+                ct);
+        }
     }
 }

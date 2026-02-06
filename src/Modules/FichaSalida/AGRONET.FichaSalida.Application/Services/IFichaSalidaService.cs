@@ -36,5 +36,12 @@ namespace AGRONET.FichaSalida.Application.Services
             int id,
             string estadoAutorizacion,
             CancellationToken ct = default);
+
+        Task<PagedResultDto<FichaSalidaAutorizacionDto>> ListarAsync(
+           string codArea,
+           string dniAutorizador,
+           string codTipoEmpleado,
+           FichaSalidaListarAutorizacionesRequestDto req,
+           CancellationToken ct = default);
     }
 }

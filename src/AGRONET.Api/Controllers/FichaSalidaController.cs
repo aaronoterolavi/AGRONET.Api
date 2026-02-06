@@ -121,5 +121,30 @@ public sealed class FichaSalidaController : ControllerBase
         return Ok(res);
     }
 
+    [HttpGet("autorizaciones")]
+    public async Task<IActionResult> Listar(
+            [FromQuery] string codArea,
+            [FromQuery] string codTipoEmpleado,
+            [FromQuery] string? estadoAutorizacion,
+            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageSize = 20,
+            CancellationToken ct = default)
+    {
+        // DNI del autorizador desde JWT (tu claim "dni")
+        var dni = User.FindFirstValue("dni");
+        if (string.IsNullOrWhiteSpace(dni))
+            return Unauthorized(new { message = "Token sin claim 'dni'." });
+
+        var req = new FichaSalidaListarAutorizacionesRequestDto
+        {
+            EstadoAutorizacion = estadoAutorizacion,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+
+        var result = await _svc.ListarAsync(codArea, dni, codTipoEmpleado, req, ct);
+        return Ok(result);
+    }
+
 
 }

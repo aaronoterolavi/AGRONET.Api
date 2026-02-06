@@ -35,6 +35,15 @@ namespace AGRONET.FichaSalida.Application.Interfaces
             int id,
             string estadoAutorizacion,
             CancellationToken ct = default);
+
+        Task<PagedResultDto<FichaSalidaAutorizacionDto>> ListarAsync(
+           string codArea,
+           string documento,
+           string codTipoEmpleado,
+           string? estadoAutorizacion,
+           int pageNumber,
+           int pageSize,
+           CancellationToken ct = default);
     }
 
     public interface IFichaSalidaAdjuntoRepository
@@ -53,4 +62,4 @@ namespace AGRONET.FichaSalida.Application.Interfaces
     }
 
    
-    }
+}

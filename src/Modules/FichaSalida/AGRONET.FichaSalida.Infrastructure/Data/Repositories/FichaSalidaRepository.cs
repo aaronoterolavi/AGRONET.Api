@@ -147,5 +147,40 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
                 commandType: CommandType.StoredProcedure);
         }
 
+        public async Task<PagedResultDto<FichaSalidaAutorizacionDto>> ListarAsync(
+           string codArea,
+           string documento,
+           string codTipoEmpleado,
+           string? estadoAutorizacion,
+           int pageNumber,
+           int pageSize,
+           CancellationToken ct = default)
+        {
+            using var con = _factory.CreateBdAgronetConnection();
+
+            var p = new DynamicParameters();
+            p.Add("@cod_area", codArea, DbType.String);
+            p.Add("@documento", documento, DbType.String);
+            p.Add("@cod_tipo_empleado", codTipoEmpleado, DbType.String);
+            p.Add("@estado_autorizacion", estadoAutorizacion, DbType.String);
+            p.Add("@PageNumber", pageNumber, DbType.Int32);
+            p.Add("@PageSize", pageSize, DbType.Int32);
+
+            using var multi = await con.QueryMultipleAsync(
+                "dbo.USP_FichaSalida_ListarAutorizaciones",
+                p,
+                commandType: CommandType.StoredProcedure);
+
+            var items = (await multi.ReadAsync<FichaSalidaAutorizacionDto>()).AsList();
+            var totalRows = await multi.ReadSingleAsync<int>();
+
+            return new PagedResultDto<FichaSalidaAutorizacionDto>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRows = totalRows
+            };
+        }
     }
 }
