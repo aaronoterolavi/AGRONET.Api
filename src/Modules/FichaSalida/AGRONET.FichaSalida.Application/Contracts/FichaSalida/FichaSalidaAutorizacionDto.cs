@@ -26,5 +26,6 @@ namespace AGRONET.FichaSalida.Application.Contracts.FichaSalida
         public string? Codigo { get; set; }
         public string? cod_area { get; set; }
         public string? cod_tipo_empleado { get; set; }
+        public string? StoragePath { get; set; }
     }
 }

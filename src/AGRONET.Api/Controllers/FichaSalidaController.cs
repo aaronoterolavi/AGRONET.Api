@@ -121,6 +121,7 @@ public sealed class FichaSalidaController : ControllerBase
         return Ok(res);
     }
 
+    [Authorize]
     [HttpGet("autorizaciones")]
     public async Task<IActionResult> Listar(
             [FromQuery] string codArea,

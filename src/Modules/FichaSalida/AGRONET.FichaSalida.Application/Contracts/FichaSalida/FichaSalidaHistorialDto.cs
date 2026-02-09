@@ -23,5 +23,6 @@ namespace AGRONET.FichaSalida.Application.Contracts.FichaSalida
         public string? FechaHoraInicio { get; set; }
         public string? FechaHoraFin { get; set; }
         public string? Justifica { get; set; }
+        public string? StoragePath { get; set; }
     }
 }
