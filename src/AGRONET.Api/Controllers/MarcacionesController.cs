@@ -57,4 +57,31 @@ public sealed class MarcacionesController : ControllerBase
 
         return Ok(new { message = result.Message });
     }
+
+    [HttpGet("reporte")]
+    public async Task<IActionResult> Reporte(string codArea, DateTime desde, DateTime hasta, CancellationToken ct)
+        => Ok(await _service.ReporteAsync(codArea, desde, hasta, ct));
+
+    [HttpPost("manual")]
+    public async Task<IActionResult> Manual(RegistrarMarcacionManualRequest req, CancellationToken ct)
+    {
+        var cmd = new RegistrarMarcacionManualCommand
+        {
+            dni = req.Dni,
+            cod_area = req.CodArea,
+            FechMarcaM = req.FechMarca,
+            horaMarcaM = TimeSpan.Parse(req.HoraMarca),
+            tipoAsistencia = req.TipoAsistencia,
+            obsPapeleta = req.ObsPapeleta,
+            codPapeleta = req.CodPapeleta,
+            aud_UsuarioLogin = User.FindFirst("username")!.Value,
+            aud_ipMarca = HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
+        };
+
+        return Ok(await _service.RegistrarManualAsync(cmd, ct));
+    }
+
+    [HttpGet("trabajadores")]
+    public async Task<IActionResult> Trabajadores(string codArea, CancellationToken ct)
+        => Ok(await _service.TrabajadoresAsync(codArea, ct));
 }

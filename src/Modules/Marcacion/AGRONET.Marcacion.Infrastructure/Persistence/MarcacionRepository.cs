@@ -44,4 +44,38 @@ public sealed class MarcacionRepository : IMarcacionRepository
 
         return msg ?? "";
     }
+
+
+    public async Task<IReadOnlyList<ReporteMarcacionDto>>
+        ListarReportePorAreaYRangoAsync(string codArea, DateTime desde, DateTime hasta, CancellationToken ct)
+    {
+        using var cn = new SqlConnection(_cs);
+        var p = new DynamicParameters();
+        p.Add("@cod_area", codArea);
+        p.Add("@fechDesde", desde);
+        p.Add("@fechHasta", hasta);
+
+        return (await cn.QueryAsync<ReporteMarcacionDto>(
+            "dbo.USP_asistencia_select_x_area_fecha_rango",
+            p, commandType: CommandType.StoredProcedure)).ToList();
+    }
+
+    public async Task<string> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct)
+    {
+        using var cn = new SqlConnection(_cs);
+        var p = new DynamicParameters(cmd);
+        return await cn.QueryFirstOrDefaultAsync<string>(
+            "dbo.USP_asistencia_insertmanual",
+            p, commandType: CommandType.StoredProcedure) ?? "";
+    }
+
+    public async Task<IReadOnlyList<TrabajadorDto>>
+        ListarTrabajadoresPorAreaAsync(string codArea, CancellationToken ct)
+    {
+        using var cn = new SqlConnection(_cs);
+        return (await cn.QueryAsync<TrabajadorDto>(
+            "dbo.USP_trabajador_listar_x_area",
+            new { cod_area = codArea },
+            commandType: CommandType.StoredProcedure)).ToList();
+    }
 }

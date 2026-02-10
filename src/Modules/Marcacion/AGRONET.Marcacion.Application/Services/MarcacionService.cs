@@ -34,4 +34,18 @@ public sealed class MarcacionService
             Message = string.IsNullOrWhiteSpace(msg) ? "Marcación procesada." : msg
         };
     }
+
+    public Task<IReadOnlyList<ReporteMarcacionDto>>
+      ReporteAsync(string codArea, DateTime desde, DateTime hasta, CancellationToken ct)
+      => _repo.ListarReportePorAreaYRangoAsync(codArea, desde, hasta, ct);
+
+    public async Task<RegistrarMarcacionResponse> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct)
+    {
+        var msg = await _repo.RegistrarManualAsync(cmd, ct);
+        return new RegistrarMarcacionResponse { Message = msg };
+    }
+
+    public Task<IReadOnlyList<TrabajadorDto>>
+        TrabajadoresAsync(string codArea, CancellationToken ct)
+        => _repo.ListarTrabajadoresPorAreaAsync(codArea, ct);
 }
