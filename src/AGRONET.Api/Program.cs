@@ -1,6 +1,8 @@
 ﻿using AGRONET.Auth.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AGRONET.FichaSalida.Infrastructure;
+using AGRONET.Marcacion.Infrastructure;
+
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+ 
 
 // Swagger + botón Authorize (sin Reference, compatible)
 builder.Services.AddSwaggerGen(c =>
@@ -50,7 +53,7 @@ builder.Services.AddSwaggerGen(c =>
 //  registra módulo Auth (Infrastructure + Application)
 builder.Services.AddAgronetAuth(builder.Configuration);
 builder.Services.AddAgronetFichaSalida(builder.Configuration);
-
+builder.Services.AddAgronetMarcacion(builder.Configuration);
 //builder.Services.AddAgronetFichaSalida(builder.Configuration);
 
 

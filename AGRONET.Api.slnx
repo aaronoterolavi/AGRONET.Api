@@ -12,4 +12,9 @@
     <Project Path="src/Modules/FichaSalida/AGRONET.FichaSalida.Application/AGRONET.FichaSalida.Application.csproj" Id="6f0bb6a2-7b02-4089-a0c0-62a00dd1c5a5" />
     <Project Path="src/Modules/FichaSalida/AGRONET.FichaSalida.Infrastructure/AGRONET.FichaSalida.Infrastructure.csproj" Id="780dd204-97b2-483e-b945-d55f34d7d626" />
   </Folder>
+  <Folder Name="/src/Modules/Marcancion/">
+    <Project Path="src/Modules/Marcacion/AGRONET.Marcacion.Application/AGRONET.Marcacion.Application.csproj" Id="4f4e4ce7-13c3-416d-9f2c-f72c02df24c3" />
+    <Project Path="src/Modules/Marcacion/AGRONET.Marcacion.Domain/AGRONET.Marcacion.Domain.csproj" Id="7c7b91e4-db2a-4b25-b572-312f0676370d" />
+    <Project Path="src/Modules/Marcacion/AGRONET.Marcacion.Infrastructure/AGRONET.Marcacion.Infrastructure.csproj" Id="76540dec-0a1f-413a-b500-03aec23322cf" />
+  </Folder>
 </Solution>
