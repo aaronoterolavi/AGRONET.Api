@@ -37,7 +37,9 @@ namespace AGRONET.Auth.Infrastructure.Security
 
                 new("username", user.Username),
                 new("dni", user.DniNorm ?? ""),
-                new(ClaimTypes.Role, user.RolCodigo ?? "USUARIO")
+                new(ClaimTypes.Role, user.RolCodigo ?? "USUARIO"),
+                 // ✅ CLAVE para menús por rol (int)
+                new("roleId", user.IdRol.ToString())
             };
 
             var key = new SymmetricSecurityKey(_signingKeyBytes);
