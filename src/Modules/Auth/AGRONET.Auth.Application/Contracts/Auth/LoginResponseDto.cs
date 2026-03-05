@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace AGRONET.Auth.Application.Contracts.Auth
@@ -25,6 +26,7 @@ namespace AGRONET.Auth.Application.Contracts.Auth
         public string? ApePaterno { get; set; }
         public string? ApeMaterno { get; set; }
         public string? Correo { get; set; }
+        public int IdRol {  get; set; }
         public string RolCodigo { get; set; } = default!;
         public string? CodArea { get; set; }
         public string? descArea { get; set; }

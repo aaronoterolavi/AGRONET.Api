@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AGRONET.FichaSalida.Infrastructure;
 using AGRONET.Marcacion.Infrastructure;
-
+using AGRONET.Menus.Infrastructure;
+using AGRONET.Roles.Infrastructure;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -54,6 +55,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAgronetAuth(builder.Configuration);
 builder.Services.AddAgronetFichaSalida(builder.Configuration);
 builder.Services.AddAgronetMarcacion(builder.Configuration);
+builder.Services.AddMenusModule();
+builder.Services.AddRolesModule();
 //builder.Services.AddAgronetFichaSalida(builder.Configuration);
 
 

@@ -18,6 +18,10 @@
     <ProjectReference Include="..\Modules\FichaSalida\AGRONET.FichaSalida.Infrastructure\AGRONET.FichaSalida.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Marcacion\AGRONET.Marcacion.Application\AGRONET.Marcacion.Application.csproj" />
     <ProjectReference Include="..\Modules\Marcacion\AGRONET.Marcacion.Infrastructure\AGRONET.Marcacion.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Menus\AGRONET.Menus.Application\AGRONET.Menus.Application.csproj" />
+    <ProjectReference Include="..\Modules\Menus\AGRONET.Menus.Infrastructure\AGRONET.Menus.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Roles\AGRONET.Roles.Application\AGRONET.Roles.Application.csproj" />
+    <ProjectReference Include="..\Modules\Roles\AGRONET.Roles.Infrastructure\AGRONET.Roles.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
