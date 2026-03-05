@@ -97,6 +97,17 @@ builder.Services
 
 
 builder.Services.AddAuthorization();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevCors",
+        policy =>
+        {
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
@@ -120,7 +131,7 @@ app.Use(async (ctx, next) =>
     }
     await next();
 });
-
+app.UseCors("DevCors");
 app.UseAuthentication();
 app.UseAuthorization();
 

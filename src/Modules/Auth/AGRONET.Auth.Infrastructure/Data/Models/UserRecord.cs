@@ -19,6 +19,7 @@ namespace AGRONET.Auth.Infrastructure.Data.Models
         public string? CodArea { get; set; }
         public string? NombreArea { get; set; }
         public string? CodTipoEmpleado { get; set; }
+        public string? CodTrabajador { get; set; }
         public bool Activo { get; set; }
     }
 }
