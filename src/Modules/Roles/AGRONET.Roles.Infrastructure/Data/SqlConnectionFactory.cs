@@ -10,8 +10,8 @@ namespace AGRONET.Roles.Infrastructure.Data
 
         public SqlConnectionFactory(IConfiguration config)
         {
-            _cs = config.GetConnectionString("DefaultConnection")
-                  ?? throw new InvalidOperationException("No existe ConnectionStrings:DefaultConnection");
+            _cs = config.GetConnectionString("BD_AGRONET")
+                  ?? throw new InvalidOperationException("No existe ConnectionStrings:BD_AGRONET");
         }
 
         public IDbConnection CreateConnection() => new SqlConnection(_cs);

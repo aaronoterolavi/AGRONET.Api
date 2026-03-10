@@ -20,23 +20,22 @@ public sealed class MarcacionesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Registrar([FromBody] RegistrarMarcacionRequest req, CancellationToken ct)
     {
-        if (req is null) return BadRequest(new { message = "Body requerido." });
+        if (req is null)
+            return BadRequest(new { message = "Body requerido." });
 
-        // Claims emitidos por TU TokenService
         var username = User.FindFirst("username")?.Value;
-        var dni = User.FindFirst("dni")?.Value;
 
         if (string.IsNullOrWhiteSpace(username))
             return Unauthorized(new { message = "Token inválido (username)." });
 
-        if (string.IsNullOrWhiteSpace(dni))
-            return Unauthorized(new { message = "Token inválido (dni)." });
+        if (string.IsNullOrWhiteSpace(req.Dni))
+            return BadRequest(new { message = "El dni es requerido." });
 
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
 
         var cmd = new RegistrarMarcacionCommand
         {
-            Dni = dni,
+            Dni = req.Dni,
             CodArea = req.CodArea,
             TipoAsistencia = req.TipoAsistencia,
             Nid = req.Nid,
@@ -48,7 +47,6 @@ public sealed class MarcacionesController : ControllerBase
 
         var result = await _service.RegistrarAsync(cmd, ct);
 
-        // Mapeo simple de respuestas (ajustable)
         if (result.Message.StartsWith("Error:", StringComparison.OrdinalIgnoreCase))
             return Conflict(new { message = result.Message });
 
