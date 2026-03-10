@@ -64,6 +64,7 @@ namespace AGRONET.Roles.Infrastructure.Repositories
                 param: new
                 {
                     IdRol = idRol,
+                    Codigo = req.Codigo,
                     Nombre = req.Nombre,
                     Descripcion = req.Descripcion
                 },
