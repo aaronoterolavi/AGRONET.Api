@@ -8,6 +8,11 @@
     <Project Path="src/Modules/Auth/AGRONET.Auth.Domain/AGRONET.Auth.Domain.csproj" Id="69eee88a-962c-43b7-aca8-3fa7cb0bbb90" />
     <Project Path="src/Modules/Auth/AGRONET.Auth.Infrastructure/AGRONET.Auth.Infrastructure.csproj" Id="86b67c6a-e607-4bb2-ace3-96765ccf1677" />
   </Folder>
+  <Folder Name="/src/Modules/Catalogos/">
+    <Project Path="src/Modules/Catalogos/AGRONET.Catalogos.Application/AGRONET.Catalogos.Application.csproj" Id="5f277613-9506-4ea9-83fb-898db63a0fe6" />
+    <Project Path="src/Modules/Catalogos/AGRONET.Catalogos.Domain/AGRONET.Catalogos.Domain.csproj" Id="03c3c0da-e252-40da-918c-ca0fea3103f9" />
+    <Project Path="src/Modules/Catalogos/AGRONET.Catalogos.Infrastructure/AGRONET.Catalogos.Infrastructure.csproj" Id="09a1ae7a-64ca-45b8-84d3-80a7434d938a" />
+  </Folder>
   <Folder Name="/src/Modules/FichaSalida/">
     <Project Path="src/Modules/FichaSalida/AGRONET.FichaSalida.Application/AGRONET.FichaSalida.Application.csproj" Id="6f0bb6a2-7b02-4089-a0c0-62a00dd1c5a5" />
     <Project Path="src/Modules/FichaSalida/AGRONET.FichaSalida.Infrastructure/AGRONET.FichaSalida.Infrastructure.csproj" Id="780dd204-97b2-483e-b945-d55f34d7d626" />
@@ -26,5 +31,10 @@
     <Project Path="src/Modules/Roles/AGRONET.Roles.Application/AGRONET.Roles.Application.csproj" Id="dc5aa7b1-a3ae-4e8e-9b37-1fbc0c651755" />
     <Project Path="src/Modules/Roles/AGRONET.Roles.Domain/AGRONET.Roles.Domain.csproj" Id="89f4b42f-3e97-4537-af15-9eddacafd6fa" />
     <Project Path="src/Modules/Roles/AGRONET.Roles.Infrastructure/AGRONET.Roles.Infrastructure.csproj" Id="de1aec8e-af46-4b1a-ba69-2c6ae8448e71" />
+  </Folder>
+  <Folder Name="/src/Modules/Users/">
+    <Project Path="src/Modules/Users/AGRONET.Users.Application/AGRONET.Users.Application.csproj" Id="5b748d71-3ced-4600-ac4f-0214b5de16a1" />
+    <Project Path="src/Modules/Users/AGRONET.Users.Domain/AGRONET.Users.Domain.csproj" Id="46ffcade-53aa-4b95-ac59-6faa782ceab4" />
+    <Project Path="src/Modules/Users/AGRONET.Users.Infrastructure/AGRONET.Users.Infrastructure.csproj" Id="b6ae1cf7-35cc-40bf-ac8e-a74d298a8771" />
   </Folder>
 </Solution>

@@ -204,5 +204,30 @@ namespace AGRONET.FichaSalida.Application.Services
                 req.PageSize,
                 ct);
         }
+
+        public async Task<IReadOnlyList<FichaSalidaListarPorAreaYFechasDto>> ListarPorAreaYFechasAsync(
+           FichaSalidaListarPorAreaYFechasRequestDto request,
+           CancellationToken cancellationToken)
+        {
+            if (request is null)
+                throw new ArgumentException("La solicitud es obligatoria.");
+
+            if (string.IsNullOrWhiteSpace(request.CodArea))
+                throw new ArgumentException("El código de área es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(request.EstadoAutorizacion))
+                throw new ArgumentException("El estado de autorización es obligatorio.");
+
+            if (request.Inicio == default)
+                throw new ArgumentException("La fecha de inicio es obligatoria.");
+
+            if (request.Fin == default)
+                throw new ArgumentException("La fecha de fin es obligatoria.");
+
+            if (request.Inicio > request.Fin)
+                throw new ArgumentException("La fecha de inicio no puede ser mayor que la fecha de fin.");
+
+            return await _repo.ListarPorAreaYFechasAsync(request, cancellationToken);
+        }
     }
 }

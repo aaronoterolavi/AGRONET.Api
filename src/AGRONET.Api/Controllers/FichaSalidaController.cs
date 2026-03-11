@@ -147,5 +147,39 @@ public sealed class FichaSalidaController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("listar-por-area-fechas")]
+    public async Task<IActionResult> ListarPorAreaYFechas(
+            [FromQuery] string codArea,
+            [FromQuery] string estadoAutorizacion,
+            [FromQuery] DateTime inicio,
+            [FromQuery] DateTime fin,
+            CancellationToken cancellationToken)
+    {
+        try
+        {
+            var request = new FichaSalidaListarPorAreaYFechasRequestDto
+            {
+                CodArea = codArea,
+                EstadoAutorizacion = estadoAutorizacion,
+                Inicio = inicio,
+                Fin = fin
+            };
+
+            var result = await _svc.ListarPorAreaYFechasAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new
+            {
+                message = "Ocurrió un error al listar las fichas de salida.",
+                detail = ex.Message
+            });
+        }
+    }
 
 }

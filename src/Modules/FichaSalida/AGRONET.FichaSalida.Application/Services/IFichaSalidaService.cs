@@ -43,5 +43,10 @@ namespace AGRONET.FichaSalida.Application.Services
            string codTipoEmpleado,
            FichaSalidaListarAutorizacionesRequestDto req,
            CancellationToken ct = default);
+
+        Task<IReadOnlyList<FichaSalidaListarPorAreaYFechasDto>> ListarPorAreaYFechasAsync(
+           FichaSalidaListarPorAreaYFechasRequestDto request,
+           CancellationToken cancellationToken);
+
     }
 }

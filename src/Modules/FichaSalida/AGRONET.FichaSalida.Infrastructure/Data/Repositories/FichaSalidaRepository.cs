@@ -182,5 +182,25 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
                 TotalRows = totalRows
             };
         }
+
+        public async Task<IReadOnlyList<FichaSalidaListarPorAreaYFechasDto>> ListarPorAreaYFechasAsync(
+           FichaSalidaListarPorAreaYFechasRequestDto request,
+           CancellationToken cancellationToken)
+        {
+            using var connection = _factory.CreateBdAgronetConnection();
+
+            var result = await connection.QueryAsync<FichaSalidaListarPorAreaYFechasDto>(
+                sql: "dbo.USP_FichaSalida_ListarPorAreaYFechas",
+                param: new
+                {
+                    cod_area = request.CodArea,
+                    estadoAutorizacion = request.EstadoAutorizacion,
+                    inicio = request.Inicio.Date,
+                    fin = request.Fin.Date
+                },
+                commandType: CommandType.StoredProcedure);
+
+            return result.ToList();
+        }
     }
 }

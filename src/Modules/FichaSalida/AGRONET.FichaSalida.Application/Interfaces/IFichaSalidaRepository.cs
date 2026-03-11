@@ -44,6 +44,10 @@ namespace AGRONET.FichaSalida.Application.Interfaces
            int pageNumber,
            int pageSize,
            CancellationToken ct = default);
+
+        Task<IReadOnlyList<FichaSalidaListarPorAreaYFechasDto>> ListarPorAreaYFechasAsync(
+            FichaSalidaListarPorAreaYFechasRequestDto request,
+            CancellationToken cancellationToken);
     }
 
     public interface IFichaSalidaAdjuntoRepository
@@ -60,6 +64,7 @@ namespace AGRONET.FichaSalida.Application.Interfaces
             string? createdByDni,
             CancellationToken ct = default);
     }
+
 
    
 }
