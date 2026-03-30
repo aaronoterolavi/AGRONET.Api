@@ -14,6 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Auth\AGRONET.Auth.Application\AGRONET.Auth.Application.csproj" />
     <ProjectReference Include="..\Modules\Auth\AGRONET.Auth.Infrastructure\AGRONET.Auth.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Boletas\AGRONET.Boletas.Application\AGRONET.Boletas.Application.csproj" />
+    <ProjectReference Include="..\Modules\Boletas\AGRONET.Boletas.Infrastructure\AGRONET.Boletas.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Catalogos\AGRONET.Catalogos.Application\AGRONET.Catalogos.Application.csproj" />
     <ProjectReference Include="..\Modules\Catalogos\AGRONET.Catalogos.Infrastructure\AGRONET.Catalogos.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\FichaSalida\AGRONET.FichaSalida.Application\AGRONET.FichaSalida.Application.csproj" />

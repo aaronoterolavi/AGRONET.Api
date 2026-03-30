@@ -6,6 +6,7 @@ using AGRONET.Menus.Infrastructure;
 using AGRONET.Roles.Infrastructure;
 using AGRONET.Users.Infrastructure;
 using AGRONET.Catalogos.Infrastructure;
+using AGRONET.Boletas.Infrastructure;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -61,6 +62,7 @@ builder.Services.AddMenusModule();
 builder.Services.AddRolesModule();
 builder.Services.AddUsersModule();
 builder.Services.AddCatalogosModule();
+builder.Services.AddBoletasModule();
 //builder.Services.AddAgronetFichaSalida(builder.Configuration);
 
 
