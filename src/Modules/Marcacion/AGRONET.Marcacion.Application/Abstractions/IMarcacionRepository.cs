@@ -13,4 +13,10 @@ public interface IMarcacionRepository
 
     Task<IReadOnlyList<TrabajadorDto>>
         ListarTrabajadoresPorAreaAsync(string codArea, CancellationToken ct);
+    
+    Task<List<AperturaMarcacionDto>> 
+        ListarAperturasAsync(int? anio, CancellationToken ct);
+
+    Task<string> RegistrarAperturaAsync(AperturaMarcacionDto cmd, CancellationToken ct);
+
 }

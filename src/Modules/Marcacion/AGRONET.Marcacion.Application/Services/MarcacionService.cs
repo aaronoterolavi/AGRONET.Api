@@ -45,7 +45,32 @@ public sealed class MarcacionService
         return new RegistrarMarcacionResponse { Message = msg };
     }
 
-    public Task<IReadOnlyList<TrabajadorDto>>
-        TrabajadoresAsync(string codArea, CancellationToken ct)
+    public Task<IReadOnlyList<TrabajadorDto>>TrabajadoresAsync(string codArea, CancellationToken ct)
         => _repo.ListarTrabajadoresPorAreaAsync(codArea, ct);
+
+    public Task<List<AperturaMarcacionDto>> ListarAperturasAsync(int? anio, CancellationToken ct)
+        => _repo.ListarAperturasAsync(anio, ct);
+
+    public async Task<RegistrarMarcacionResponse> RegistrarAperturaAsync(AperturaMarcacionDto cmd, CancellationToken ct)
+    {
+        // Validaciones mínimas (rápidas)
+        //if (string.IsNullOrWhiteSpace(cmd.Dni) || cmd.Dni.Length != 8)
+        //    return new RegistrarMarcacionResponse { Message = "Token inválido (dni)." };
+
+        //if (string.IsNullOrWhiteSpace(cmd.AudUsuarioLogin))
+        //    return new RegistrarMarcacionResponse { Message = "Token inválido (username)." };
+
+        //if (string.IsNullOrWhiteSpace(cmd.CodArea))
+        //    return new RegistrarMarcacionResponse { Message = "CodArea es requerido." };
+
+        //if (string.IsNullOrWhiteSpace(cmd.TipoAsistencia) || cmd.TipoAsistencia.Length != 2)
+        //    return new RegistrarMarcacionResponse { Message = "TipoAsistencia inválido (2 caracteres)." };
+
+        var msg = await _repo.RegistrarAperturaAsync(cmd, ct);
+
+        return new RegistrarMarcacionResponse
+        {
+            Message = string.IsNullOrWhiteSpace(msg) ? "Ampliación procesada." : msg
+        };
+    }
 }

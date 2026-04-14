@@ -82,4 +82,47 @@ public sealed class MarcacionesController : ControllerBase
     [HttpGet("trabajadores")]
     public async Task<IActionResult> Trabajadores(string codArea, CancellationToken ct)
         => Ok(await _service.TrabajadoresAsync(codArea, ct));
+
+    [HttpGet("aperturas")]
+    public async Task<IActionResult> ListarAperturas([FromQuery] int? anio,CancellationToken ct)
+    {
+        var result = await _service.ListarAperturasAsync(anio, ct);
+        return Ok(result);
+    }
+
+    [HttpPost("mantenerapertura")]
+    public async Task<IActionResult> RegistrarAperturas([FromBody] RegistrarAperturaRequest request, CancellationToken ct)
+    {
+        if (request is null)
+            return BadRequest(new { message = "Body requerido." });
+
+        var username = User.FindFirst("username")?.Value;
+
+        if (string.IsNullOrWhiteSpace(username))
+            return Unauthorized(new { message = "Token inválido (username)." });
+
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+
+        var cmd = new AperturaMarcacionDto
+        {
+            Anio = request.Anio,
+            Mes = request.Mes,
+            FechaInicio = request.FechaInicio,
+            FechaFin = request.FechaFin,
+            Activo = request.Activo,
+            Observacion = request.Observacion,
+            Usuario = request.Usuario
+        };
+
+        var result = await _service.RegistrarAperturaAsync(cmd, ct);
+
+        if (result.Message.StartsWith("Error:", StringComparison.OrdinalIgnoreCase))
+            return Conflict(new { message = result.Message });
+
+        //if (result.Message.Contains("Ud ya tiene registrado", StringComparison.OrdinalIgnoreCase))
+        //    return BadRequest(new { message = result.Message });
+
+        return Ok(new { message = result.Message });
+    }
+
 }

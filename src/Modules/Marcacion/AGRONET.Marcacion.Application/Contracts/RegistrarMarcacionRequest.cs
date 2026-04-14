@@ -6,9 +6,6 @@ namespace AGRONET.Marcacion.Application.Contracts
 {
     public sealed class RegistrarMarcacionRequest
     {
-         
-
-
         public string Dni { get; set; } = "";
         public string CodArea { get; set; } = "";
         public string TipoAsistencia { get; set; } = "";

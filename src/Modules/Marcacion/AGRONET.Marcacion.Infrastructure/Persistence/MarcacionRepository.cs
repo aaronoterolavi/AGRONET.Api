@@ -78,4 +78,48 @@ public sealed class MarcacionRepository : IMarcacionRepository
             new { cod_area = codArea },
             commandType: CommandType.StoredProcedure)).ToList();
     }
+    
+    public async Task<List<AperturaMarcacionDto>> 
+        ListarAperturasAsync(int? anio, CancellationToken ct)
+    {
+        using var cn = new SqlConnection(_cs);
+        return (await cn.QueryAsync<AperturaMarcacionDto>(
+            "dbo.SP_LISTAR_APERTURA_MARCACION",
+            new { anio },
+            commandType: CommandType.StoredProcedure)).ToList();
+    }
+
+    public async Task<string> RegistrarAperturaAsync(AperturaMarcacionDto entity,CancellationToken ct)
+    {
+        try
+        {
+            using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@NUM_ANIO", entity.Anio, DbType.Int32);
+            parameters.Add("@NUM_MES", entity.Mes, DbType.Int32);
+            parameters.Add("@FEC_INICIO_APERTURA", entity.FechaInicio, DbType.DateTime);
+            parameters.Add("@FEC_FIN_APERTURA", entity.FechaFin, DbType.DateTime);
+            parameters.Add("@FLG_ACTIVO", entity.Activo, DbType.Boolean);
+            parameters.Add("@TXT_OBSERVACION", entity.Observacion, DbType.String, size: 255);
+            parameters.Add("@TXT_USU", entity.Usuario, DbType.String, size: 50);
+
+            var msg = await cn.QueryFirstOrDefaultAsync<string>(
+            new CommandDefinition(
+              commandText: "SP_MANTENER_APERTURA_MARCACION",
+              parameters: parameters,
+              commandType: CommandType.StoredProcedure,
+              cancellationToken: ct
+          )
+      );
+
+            return msg ?? "";
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception("Error en base de datos al mantener apertura de marcación.", ex);
+        }
+    }
+
 }
