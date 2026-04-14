@@ -63,6 +63,14 @@ public sealed class MarcacionesController : ControllerBase
     [HttpPost("manual")]
     public async Task<IActionResult> Manual(RegistrarMarcacionManualRequest req, CancellationToken ct)
     {
+        if (req is null)
+            return BadRequest(new { message = "Body requerido." });
+
+        var username = User.FindFirst("username")?.Value;
+
+        if (string.IsNullOrWhiteSpace(username))
+            return Unauthorized(new { message = "Token inválido (username)." });
+
         var cmd = new RegistrarMarcacionManualCommand
         {
             dni = req.Dni,
@@ -72,12 +80,27 @@ public sealed class MarcacionesController : ControllerBase
             tipoAsistencia = req.TipoAsistencia,
             obsPapeleta = req.ObsPapeleta,
             codPapeleta = req.CodPapeleta,
-            aud_UsuarioLogin = User.FindFirst("username")!.Value,
+            aud_UsuarioLogin = username,
             aud_ipMarca = HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
         };
 
-        return Ok(await _service.RegistrarManualAsync(cmd, ct));
+        var result = await _service.RegistrarManualAsync(cmd, ct);
+
+        if (!result.Success)
+        {
+            return result.Codigo switch
+            {
+                1001 => BadRequest(new { message = result.Message }), // Mes Cerrado
+                1002 => Conflict(new { message = result.Message }),   // Duplicado
+                1003 => Conflict(new { message = result.Message }),
+                _ => BadRequest(new { message = result.Message })
+            };
+        }
+
+        return Ok(new { message = result.Message });
     }
+
+
 
     [HttpGet("trabajadores")]
     public async Task<IActionResult> Trabajadores(string codArea, CancellationToken ct)

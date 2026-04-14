@@ -9,7 +9,7 @@ public interface IMarcacionRepository
     Task<IReadOnlyList<ReporteMarcacionDto>>
        ListarReportePorAreaYRangoAsync(string codArea, DateTime desde, DateTime hasta, CancellationToken ct);
 
-    Task<string> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct);
+    Task<MarcacionSpResult> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct);
 
     Task<IReadOnlyList<TrabajadorDto>>
         ListarTrabajadoresPorAreaAsync(string codArea, CancellationToken ct);

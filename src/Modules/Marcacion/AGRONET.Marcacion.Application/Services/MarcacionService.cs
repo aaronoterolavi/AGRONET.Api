@@ -41,8 +41,14 @@ public sealed class MarcacionService
 
     public async Task<RegistrarMarcacionResponse> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct)
     {
-        var msg = await _repo.RegistrarManualAsync(cmd, ct);
-        return new RegistrarMarcacionResponse { Message = msg };
+        var sp = await _repo.RegistrarManualAsync(cmd, ct);
+
+        return new RegistrarMarcacionResponse
+        {
+            Success = sp.Codigo == 1,
+            Codigo = sp.Codigo,
+            Message = sp.Mensaje
+        };
     }
 
     public Task<IReadOnlyList<TrabajadorDto>>TrabajadoresAsync(string codArea, CancellationToken ct)

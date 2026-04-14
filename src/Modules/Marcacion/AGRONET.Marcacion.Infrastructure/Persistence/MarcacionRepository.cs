@@ -60,13 +60,20 @@ public sealed class MarcacionRepository : IMarcacionRepository
             p, commandType: CommandType.StoredProcedure)).ToList();
     }
 
-    public async Task<string> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct)
+    public async Task<MarcacionSpResult> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct)
     {
         using var cn = new SqlConnection(_cs);
         var p = new DynamicParameters(cmd);
-        return await cn.QueryFirstOrDefaultAsync<string>(
-            "dbo.USP_asistencia_insertmanual",
-            p, commandType: CommandType.StoredProcedure) ?? "";
+        var result = await cn.QueryFirstOrDefaultAsync<MarcacionSpResult>(
+    "dbo.USP_asistencia_insertmanual",
+    p,
+    commandType: CommandType.StoredProcedure);
+
+        return result ?? new MarcacionSpResult
+        {
+            Codigo = 500,
+            Mensaje = "Sin respuesta del SP"
+        };
     }
 
     public async Task<IReadOnlyList<TrabajadorDto>>
