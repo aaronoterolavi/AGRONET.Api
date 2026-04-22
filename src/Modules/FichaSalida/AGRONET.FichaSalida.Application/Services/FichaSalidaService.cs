@@ -179,8 +179,9 @@ namespace AGRONET.FichaSalida.Application.Services
         public Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
             int id,
             string estadoAutorizacion,
+            string observacionesVigilancia,
             CancellationToken ct = default)
-            => _repo.ActualizarEstadoAutorizacionAsync(id, estadoAutorizacion, ct);
+            => _repo.ActualizarEstadoAutorizacionAsync(id, estadoAutorizacion,observacionesVigilancia, ct);
 
 
         public Task<PagedResultDto<FichaSalidaAutorizacionDto>> ListarAsync(

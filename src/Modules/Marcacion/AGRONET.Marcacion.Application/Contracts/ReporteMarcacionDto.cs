@@ -24,5 +24,6 @@ namespace AGRONET.Marcacion.Application.Contracts
         public string AlmuerzoTxt => Almuerzo?.ToString(@"hh\:mm") ?? "00:00";
         public string RegresoTxt => Regreso?.ToString(@"hh\:mm") ?? "00:00";
         public string SalidaTxt => Salida?.ToString(@"hh\:mm") ?? "00:00";
+        public string ObsPapeleta { get; set; }
     }
 }

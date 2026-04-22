@@ -113,7 +113,7 @@ public sealed class FichaSalidaController : ControllerBase
         if (string.IsNullOrWhiteSpace(req.EstadoAutorizacion))
             return BadRequest(new { message = "EstadoAutorizacion es requerido." });
 
-        var res = await _svc.ActualizarEstadoAutorizacionAsync(req.Id, req.EstadoAutorizacion.Trim(), ct);
+        var res = await _svc.ActualizarEstadoAutorizacionAsync(req.Id, req.EstadoAutorizacion.Trim(), req.observacionesVigilancia.Trim(), ct);
 
         if (res.Codigo != 1)
             return UnprocessableEntity(res);

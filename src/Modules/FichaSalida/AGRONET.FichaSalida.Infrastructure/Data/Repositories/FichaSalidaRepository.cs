@@ -133,6 +133,7 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
         public async Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
             int id,
             string estadoAutorizacion,
+            string observacionesVigilancia,
             CancellationToken ct = default)
         {
             using var con = _factory.CreateBdAgronetConnection();
@@ -140,6 +141,7 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
             var p = new DynamicParameters();
             p.Add("@id", id, DbType.Int32);
             p.Add("@estadoAutorizacion", estadoAutorizacion, DbType.String);
+            p.Add("@observacionesVigilancia", observacionesVigilancia, DbType.String);
 
             return await con.QueryFirstAsync<OperacionResultadoDto>(
                 "dbo.USP_tbl_FichaSalida_ActualizarEstadoAutorizacion",
