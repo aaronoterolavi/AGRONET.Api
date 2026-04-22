@@ -35,6 +35,7 @@ namespace AGRONET.FichaSalida.Application.Services
         Task<OperacionResultadoDto> ActualizarEstadoAutorizacionAsync(
             int id,
             string estadoAutorizacion,
+            string observacionesVigilancia,
             CancellationToken ct = default);
 
         Task<PagedResultDto<FichaSalidaAutorizacionDto>> ListarAsync(

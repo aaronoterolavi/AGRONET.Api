@@ -8,5 +8,7 @@ namespace AGRONET.FichaSalida.Application.Contracts.FichaSalida
     {
         public int Id { get; set; }
         public string EstadoAutorizacion { get; set; } = default!;
+        public string observacionesVigilancia { get; set; } = default!;
+
     }
 }
