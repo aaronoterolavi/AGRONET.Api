@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AGRONET.Api.Swagger
@@ -9,7 +9,9 @@ namespace AGRONET.Api.Swagger
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             var hasAllowAnonymous =
-                context.MethodInfo.GetCustomAttributes(true).OfType<AllowAnonymousAttribute>().Any();
+                context.MethodInfo.GetCustomAttributes(true)
+                    .OfType<AllowAnonymousAttribute>()
+                    .Any();
 
             if (hasAllowAnonymous)
             {
