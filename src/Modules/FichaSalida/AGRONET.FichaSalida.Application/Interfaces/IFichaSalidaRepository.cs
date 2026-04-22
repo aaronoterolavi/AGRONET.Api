@@ -24,6 +24,8 @@ namespace AGRONET.FichaSalida.Application.Interfaces
 
         Task<IReadOnlyList<FichaSalidaEstadoDto>> ListarEstadosAsync(CancellationToken ct = default);
 
+        Task<FichaSalidaDetalleDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default);
+
         Task<(int? IdFichaSalida, string MensajeSalida)> InsertarAsync(
         string dni,
         FichaSalidaCrearRequestDto req,
@@ -49,6 +51,8 @@ namespace AGRONET.FichaSalida.Application.Interfaces
             FichaSalidaListarPorAreaYFechasRequestDto request,
             CancellationToken cancellationToken);
     }
+
+
 
     public interface IFichaSalidaAdjuntoRepository
     {

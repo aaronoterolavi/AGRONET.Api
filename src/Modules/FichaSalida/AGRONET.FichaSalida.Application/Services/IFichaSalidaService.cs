@@ -48,5 +48,7 @@ namespace AGRONET.FichaSalida.Application.Services
            FichaSalidaListarPorAreaYFechasRequestDto request,
            CancellationToken cancellationToken);
 
+        Task<FichaSalidaDetalleDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default);
+
     }
 }

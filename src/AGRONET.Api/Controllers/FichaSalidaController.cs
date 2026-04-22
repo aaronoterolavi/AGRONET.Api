@@ -182,4 +182,18 @@ public sealed class FichaSalidaController : ControllerBase
         }
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> ObtenerPorId([FromRoute] int id, CancellationToken ct)
+    {
+        if (id <= 0)
+            return BadRequest(new { message = "Id inválido." });
+
+        var result = await _svc.ObtenerPorIdAsync(id, ct);
+
+        if (result is null)
+            return NotFound(new { message = "No se encontró la ficha de salida." });
+
+        return Ok(result);
+    }
+
 }

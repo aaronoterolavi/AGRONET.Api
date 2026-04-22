@@ -202,5 +202,18 @@ namespace AGRONET.FichaSalida.Infrastructure.Data.Repositories
 
             return result.ToList();
         }
+
+        public async Task<FichaSalidaDetalleDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default)
+        {
+            using var con = _factory.CreateBdAgronetConnection();
+
+            var p = new DynamicParameters();
+            p.Add("@id", id, DbType.Int32);
+
+            return await con.QueryFirstOrDefaultAsync<FichaSalidaDetalleDto>(
+                "dbo.USP_tbl_FichaSalida_ObtenerPorId",
+                p,
+                commandType: CommandType.StoredProcedure);
+        }
     }
 }

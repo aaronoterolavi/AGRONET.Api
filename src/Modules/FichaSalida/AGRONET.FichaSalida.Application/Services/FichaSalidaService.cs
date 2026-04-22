@@ -229,5 +229,8 @@ namespace AGRONET.FichaSalida.Application.Services
 
             return await _repo.ListarPorAreaYFechasAsync(request, cancellationToken);
         }
+
+        public Task<FichaSalidaDetalleDto?> ObtenerPorIdAsync(int id, CancellationToken ct = default)
+    => _repo.ObtenerPorIdAsync(id, ct);
     }
 }
