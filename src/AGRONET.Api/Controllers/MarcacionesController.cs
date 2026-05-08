@@ -103,8 +103,8 @@ public sealed class MarcacionesController : ControllerBase
 
 
     [HttpGet("trabajadores")]
-    public async Task<IActionResult> Trabajadores(string codArea, CancellationToken ct)
-        => Ok(await _service.TrabajadoresAsync(codArea, ct));
+    public async Task<IActionResult> Trabajadores(string codArea,DateTime fecha, CancellationToken ct)
+        => Ok(await _service.TrabajadoresAsync(codArea, fecha, ct));
 
     [HttpGet("listarAperturas")]
     public async Task<IActionResult> ListarAperturas([FromQuery] int? anio,CancellationToken ct)

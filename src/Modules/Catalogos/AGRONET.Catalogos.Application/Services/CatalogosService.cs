@@ -14,5 +14,13 @@ namespace AGRONET.Catalogos.Application.Services
 
         public Task<IReadOnlyList<AreaComboDto>> ListarAreasAsync(CancellationToken ct)
             => _repository.ListarAreasAsync(ct);
+
+        // ✅ NUEVO: Listar áreas padre
+        public Task<IReadOnlyList<AreaComboDto>> ListarAreasPadreAsync(CancellationToken ct)
+            => _repository.ListarAreasPadreAsync(ct);
+
+        // ✅ NUEVO: Listar áreas hijas por código padre
+        public Task<IReadOnlyList<AreaComboDto>> ListarAreasHijasAsync(string codPadre, CancellationToken ct)
+            => _repository.ListarAreasHijasAsync(codPadre, ct);
     }
 }

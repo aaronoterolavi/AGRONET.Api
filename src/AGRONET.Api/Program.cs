@@ -1,4 +1,5 @@
 ﻿using AGRONET.Auth.Infrastructure;
+using AGRONET.Bienes.Infrastructure;
 using AGRONET.FichaSalida.Infrastructure;
 using AGRONET.Marcacion.Infrastructure;
 using AGRONET.Menus.Infrastructure;
@@ -60,6 +61,7 @@ builder.Services.AddRolesModule();
 builder.Services.AddUsersModule();
 builder.Services.AddCatalogosModule();
 builder.Services.AddBoletasModule();
+builder.Services.AddBienesModule();
 
 var jwt = builder.Configuration.GetSection("Jwt");
 var key = jwt["SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey no configurado.");

@@ -51,8 +51,8 @@ public sealed class MarcacionService
         };
     }
 
-    public Task<IReadOnlyList<TrabajadorDto>>TrabajadoresAsync(string codArea, CancellationToken ct)
-        => _repo.ListarTrabajadoresPorAreaAsync(codArea, ct);
+    public Task<IReadOnlyList<TrabajadorDto>>TrabajadoresAsync(string codArea,DateTime fecha, CancellationToken ct)
+        => _repo.ListarTrabajadoresPorAreaAsync(codArea, fecha, ct);
 
     public Task<List<AperturaMarcacionDto>> ListarAperturasAsync(int? anio, CancellationToken ct)
         => _repo.ListarAperturasAsync(anio, ct);

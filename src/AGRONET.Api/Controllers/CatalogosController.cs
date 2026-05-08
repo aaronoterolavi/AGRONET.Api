@@ -23,5 +23,25 @@ namespace AGRONET.Api.Controllers
             var list = await _service.ListarAreasAsync(ct);
             return Ok(list);
         }
+        // GET /api/catalogos/areas/padre
+        [HttpGet("areas/padre")]
+        public async Task<IActionResult> ListarAreasPadre(CancellationToken ct)
+        {
+            var list = await _service.ListarAreasPadreAsync(ct);
+            return Ok(list);
+        }
+        // GET /api/catalogos/areas/hijas?codPadre={codPadre}
+        [HttpGet("areas/hijas")]
+        public async Task<IActionResult> ListarAreasHijas([FromQuery] string codPadre, CancellationToken ct)
+        {
+            if (string.IsNullOrEmpty(codPadre))
+            {
+                return BadRequest(new { mensaje = "El código padre es requerido" });
+            }
+
+            var list = await _service.ListarAreasHijasAsync(codPadre, ct);
+            return Ok(list);
+        }
+
     }
 }

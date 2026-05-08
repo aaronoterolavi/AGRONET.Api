@@ -25,5 +25,33 @@ namespace AGRONET.Catalogos.Infrastructure.Repositories
 
             return result.ToList();
         }
+        // ✅ NUEVO: Listar áreas padre (USP_AreasPadre)
+        public async Task<IReadOnlyList<AreaComboDto>> ListarAreasPadreAsync(CancellationToken ct)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+
+            var result = await connection.QueryAsync<AreaComboDto>(
+                sql: "dbo.USP_AreasPadre",
+                commandType: CommandType.StoredProcedure);
+
+            return result.ToList();
+        }
+
+        // ✅ NUEVO: Listar áreas hijas (USP_AreasHijas)
+        public async Task<IReadOnlyList<AreaComboDto>> ListarAreasHijasAsync(string codPadre, CancellationToken ct)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@cod_padre", codPadre);
+
+            var result = await connection.QueryAsync<AreaComboDto>(
+                sql: "dbo.USP_AreasHijas",
+                param: parameters,
+                commandType: CommandType.StoredProcedure);
+
+            return result.ToList();
+        }
+
     }
 }

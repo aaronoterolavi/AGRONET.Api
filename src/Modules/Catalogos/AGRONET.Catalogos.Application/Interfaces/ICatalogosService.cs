@@ -5,5 +5,7 @@ namespace AGRONET.Catalogos.Application.Interfaces
     public interface ICatalogosService
     {
         Task<IReadOnlyList<AreaComboDto>> ListarAreasAsync(CancellationToken ct);
+        Task<IReadOnlyList<AreaComboDto>> ListarAreasPadreAsync(CancellationToken ct );
+        Task<IReadOnlyList<AreaComboDto>> ListarAreasHijasAsync(string codPadre, CancellationToken ct );
     }
 }

@@ -77,12 +77,12 @@ public sealed class MarcacionRepository : IMarcacionRepository
     }
 
     public async Task<IReadOnlyList<TrabajadorDto>>
-        ListarTrabajadoresPorAreaAsync(string codArea, CancellationToken ct)
+        ListarTrabajadoresPorAreaAsync(string codArea,DateTime fecha, CancellationToken ct)
     {
         using var cn = new SqlConnection(_cs);
         return (await cn.QueryAsync<TrabajadorDto>(
             "dbo.USP_trabajador_listar_x_area",
-            new { cod_area = codArea },
+            new { cod_area = codArea, fecha },
             commandType: CommandType.StoredProcedure)).ToList();
     }
     

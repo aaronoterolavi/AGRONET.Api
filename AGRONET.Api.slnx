@@ -8,6 +8,11 @@
     <Project Path="src/Modules/Auth/AGRONET.Auth.Domain/AGRONET.Auth.Domain.csproj" Id="69eee88a-962c-43b7-aca8-3fa7cb0bbb90" />
     <Project Path="src/Modules/Auth/AGRONET.Auth.Infrastructure/AGRONET.Auth.Infrastructure.csproj" Id="86b67c6a-e607-4bb2-ace3-96765ccf1677" />
   </Folder>
+  <Folder Name="/src/Modules/Bienes/">
+    <Project Path="src/Modules/Bienes/AGRONET.Bienes.Application/AGRONET.Bienes.Application.csproj" Id="6bef6d73-17cf-48fa-a327-6f2e58cd9c6b" />
+    <Project Path="src/Modules/Bienes/AGRONET.Bienes.Domain/AGRONET.Bienes.Domain.csproj" Id="728ff4a0-eca0-424a-a911-a9597e1cfea1" />
+    <Project Path="src/Modules/Bienes/AGRONET.Bienes.Infrastructure/AGRONET.Bienes.Infrastructure.csproj" Id="9f32abd2-71d6-43b6-85c1-e8eebb50b438" />
+  </Folder>
   <Folder Name="/src/Modules/Boletas/">
     <Project Path="src/Modules/Boletas/AGRONET.Boletas.Application/AGRONET.Boletas.Application.csproj" Id="3a5cfdbb-fad1-4fa6-a5e8-d0a6aa476a28" />
     <Project Path="src/Modules/Boletas/AGRONET.Boletas.Domain/AGRONET.Boletas.Domain.csproj" Id="4cb4d35e-6655-4078-8d95-252419e9a96f" />

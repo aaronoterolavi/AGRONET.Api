@@ -12,7 +12,7 @@ public interface IMarcacionRepository
     Task<MarcacionSpResult> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct);
 
     Task<IReadOnlyList<TrabajadorDto>>
-        ListarTrabajadoresPorAreaAsync(string codArea, CancellationToken ct);
+        ListarTrabajadoresPorAreaAsync(string codArea,DateTime fecha, CancellationToken ct);
     
     Task<List<AperturaMarcacionDto>> 
         ListarAperturasAsync(int? anio, CancellationToken ct);
