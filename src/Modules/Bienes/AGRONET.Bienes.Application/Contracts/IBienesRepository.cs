@@ -20,6 +20,7 @@ public interface IBienesRepository
     // ========================= CATÁLOGOS =========================
     Task<IReadOnlyList<TipoBien>> ListarTiposBienAsync(CancellationToken ct = default);
     Task<IReadOnlyList<Marca>> ListarMarcasAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<Oficina>> ListarOficinasAsync(CancellationToken ct = default);
     Task<IReadOnlyList<Procesador>> ListarProcesadoresAsync(CancellationToken ct = default);
     Task<IReadOnlyList<Software>> ListarSoftwareAsync(CancellationToken ct = default);
 

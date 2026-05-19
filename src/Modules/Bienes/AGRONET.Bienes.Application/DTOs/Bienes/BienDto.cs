@@ -14,6 +14,10 @@ public class BienDto
     public string? txt_descripcion { get; set; }
     public int ide_tipo_bien { get; set; }
     public string tipo_bien { get; set; } = string.Empty;
+
+    public int ide_oficina { get; set; }
+    public string nom_oficina { get; set; } = string.Empty;
+
     public int ide_marca { get; set; }
     public string marca { get; set; } = string.Empty;
     public string? txt_modelo { get; set; }

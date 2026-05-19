@@ -13,6 +13,7 @@ public class BienActualizarRequestDto
     public string txt_nombre { get; set; } = string.Empty;
     public string? txt_descripcion { get; set; }
     public int ide_tipo_bien { get; set; }
+    public int ide_oficina { get; set; }
     public int ide_marca { get; set; }
     public string? txt_modelo { get; set; }
     public string? txt_serie { get; set; }

@@ -18,6 +18,7 @@ public interface IBienesService
     // ========================= CATÁLOGOS =========================
     Task<IReadOnlyList<TipoBienDto>> ListarTiposBienAsync(CancellationToken ct = default);
     Task<IReadOnlyList<MarcaDto>> ListarMarcasAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<OficinaDto>> ListarOficinasAsync(CancellationToken ct = default);
     Task<IReadOnlyList<ProcesadorDto>> ListarProcesadoresAsync(CancellationToken ct = default);
     Task<IReadOnlyList<SoftwareDto>> ListarSoftwareAsync(CancellationToken ct = default);
 

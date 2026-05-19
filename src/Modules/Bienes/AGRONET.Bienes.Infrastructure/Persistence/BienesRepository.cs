@@ -33,6 +33,7 @@ public sealed class BienesRepository : IBienesRepository
             p.Add("@cod_patrimonial", filtros.cod_patrimonial);
             p.Add("@txt_nombre", filtros.txt_nombre);
             p.Add("@ide_tipo_bien", filtros.ide_tipo_bien);
+            p.Add("@ide_oficina", filtros.ide_oficina);
             p.Add("@est_fisico", filtros.est_fisico);
             p.Add("@cod_area", filtros.cod_area);
             p.Add("@pageSize", filtros.page_size);
@@ -130,6 +131,7 @@ public sealed class BienesRepository : IBienesRepository
             p.Add("@descripcion", bien.txt_descripcion);
             p.Add("@tipoBienId", bien.ide_tipo_bien);
             p.Add("@marcaId", bien.ide_marca);
+            p.Add("@oficinaId", bien.ide_oficina);
             p.Add("@modelo", bien.txt_modelo);
             p.Add("@serie", bien.txt_serie);
             p.Add("@fechaAdquisicion", bien.fec_adquisicion);
@@ -173,6 +175,7 @@ public sealed class BienesRepository : IBienesRepository
             p.Add("@descripcion", bien.txt_descripcion);
             p.Add("@tipoBienId", bien.ide_tipo_bien);
             p.Add("@marcaId", bien.ide_marca);
+            p.Add("@oficinaId", bien.ide_oficina);
             p.Add("@modelo", bien.txt_modelo);
             p.Add("@serie", bien.txt_serie);
             p.Add("@fechaAdquisicion", bien.fec_adquisicion);
@@ -303,6 +306,28 @@ public sealed class BienesRepository : IBienesRepository
         catch (SqlException ex)
         {
             throw new Exception($"Error al listar marcas: {ex.Message}");
+        }
+    }
+    public async Task<IReadOnlyList<Oficina>> ListarOficinasAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var oficina = await cn.QueryAsync<Oficina>(
+                new CommandDefinition(
+                    commandText: "dbo.SGBL_SP_R_OFICINAS",
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: ct
+                )
+            );
+
+            return oficina.ToList();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al listar oficinas: {ex.Message}");
         }
     }
 

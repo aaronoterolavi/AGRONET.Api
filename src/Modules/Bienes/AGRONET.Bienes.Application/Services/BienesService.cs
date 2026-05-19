@@ -46,6 +46,7 @@ public class BienesService : IBienesService
             txt_descripcion = request.txt_descripcion,
             ide_tipo_bien = request.ide_tipo_bien,
             ide_marca = request.ide_marca,
+            ide_oficina = request.ide_oficina,
             txt_modelo = request.txt_modelo,
             txt_serie = request.txt_serie,
             fec_adquisicion = request.fec_adquisicion,
@@ -90,6 +91,7 @@ public class BienesService : IBienesService
             txt_descripcion = request.txt_descripcion,
             ide_tipo_bien = request.ide_tipo_bien,
             ide_marca = request.ide_marca,
+            ide_oficina = request.ide_oficina,
             txt_modelo = request.txt_modelo,
             txt_serie = request.txt_serie,
             fec_adquisicion = request.fec_adquisicion,
@@ -140,6 +142,17 @@ public class BienesService : IBienesService
             ide_marca = m.ide_marca,
             cod_marca = m.cod_marca,
             txt_nombre = m.txt_nombre
+        }).ToList();
+    }
+
+    public async Task<IReadOnlyList<OficinaDto>> ListarOficinasAsync(CancellationToken ct = default)
+    {
+        var oficina = await _repository.ListarOficinasAsync(ct);
+        return oficina.Select(m => new OficinaDto
+        {
+            ide_oficina = m.ide_oficina,
+            cod_oficina = m.cod_oficina,
+            nom_oficina = m.nom_oficina
         }).ToList();
     }
 

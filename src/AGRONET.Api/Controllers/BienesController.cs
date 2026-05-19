@@ -32,6 +32,7 @@ public class BienesController : ControllerBase
         [FromQuery] string? codPatrimonial,
         [FromQuery] string? nombre,
         [FromQuery] int? tipoBienId,
+        [FromQuery] int? oficinaId,
         [FromQuery] string? estadoFisico,
         [FromQuery] string? codArea,
         [FromQuery] int pageSize = 20,
@@ -45,6 +46,7 @@ public class BienesController : ControllerBase
                 cod_patrimonial = codPatrimonial,
                 txt_nombre = nombre,
                 ide_tipo_bien = tipoBienId,
+                ide_oficina = oficinaId,
                 est_fisico = estadoFisico,
                 cod_area = codArea,
                 page_size = pageSize,
@@ -208,6 +210,24 @@ public class BienesController : ControllerBase
         {
             _logger.LogError(ex, "Error al listar tipos de bien");
             return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al listar los tipos de bien"));
+        }
+    }
+
+    /// <summary>
+    /// Lista las oficina
+    /// </summary>
+    [HttpGet("catalogos/oficinas")]
+    public async Task<IActionResult> ListarOficinas(CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _bienesService.ListarOficinasAsync(ct);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al listar oficinas");
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al listar las oficinas"));
         }
     }
 
