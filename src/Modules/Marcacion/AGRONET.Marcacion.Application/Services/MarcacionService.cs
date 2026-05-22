@@ -39,6 +39,9 @@ public sealed class MarcacionService
       ReporteAsync(string codArea, DateTime desde, DateTime hasta, CancellationToken ct)
       => _repo.ListarReportePorAreaYRangoAsync(codArea, desde, hasta, ct);
 
+
+
+
     public async Task<RegistrarMarcacionResponse> RegistrarManualAsync(RegistrarMarcacionManualCommand cmd, CancellationToken ct)
     {
         var sp = await _repo.RegistrarManualAsync(cmd, ct);
@@ -78,5 +81,14 @@ public sealed class MarcacionService
         {
             Message = string.IsNullOrWhiteSpace(msg) ? "Ampliación procesada." : msg
         };
+    }
+
+    public Task<IReadOnlyList<AsistenciaMensualDto>> ListarAsistenciaMensualPorDniAsync(
+    string dni,
+    string mes,
+    string anio,
+    CancellationToken ct)
+    {
+        return _repo.ListarAsistenciaMensualPorDniAsync(dni, mes, anio, ct);
     }
 }

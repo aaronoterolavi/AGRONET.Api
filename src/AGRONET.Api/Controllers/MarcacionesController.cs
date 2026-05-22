@@ -148,4 +148,35 @@ public sealed class MarcacionesController : ControllerBase
         return Ok(new { message = result.Message });
     }
 
+    [HttpGet("asistencia-mensual")]
+    public async Task<IActionResult> AsistenciaMensual(
+     [FromQuery] string mes,
+     [FromQuery] string anio,
+     CancellationToken ct)
+    {
+        var dni = User.FindFirst("dni")?.Value;
+
+        if (string.IsNullOrWhiteSpace(dni))
+            return Unauthorized(new { message = "Token inválido. No se encontró el DNI." });
+
+        if (string.IsNullOrWhiteSpace(mes))
+            return BadRequest(new { message = "El mes es requerido." });
+
+        if (string.IsNullOrWhiteSpace(anio))
+            return BadRequest(new { message = "El año es requerido." });
+
+        mes = mes.Trim().PadLeft(2, '0');
+        anio = anio.Trim();
+
+        if (mes.Length != 2 || !int.TryParse(mes, out var mesNumero) || mesNumero < 1 || mesNumero > 12)
+            return BadRequest(new { message = "El mes debe tener formato válido. Ejemplo: 07." });
+
+        if (anio.Length != 4 || !int.TryParse(anio, out _))
+            return BadRequest(new { message = "El año debe tener formato válido. Ejemplo: 2026." });
+
+        var result = await _service.ListarAsistenciaMensualPorDniAsync(dni, mes, anio, ct);
+
+        return Ok(result);
+    }
+
 }

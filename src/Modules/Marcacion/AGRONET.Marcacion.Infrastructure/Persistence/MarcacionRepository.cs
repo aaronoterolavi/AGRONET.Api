@@ -129,4 +129,29 @@ public sealed class MarcacionRepository : IMarcacionRepository
         }
     }
 
+    public async Task<IReadOnlyList<AsistenciaMensualDto>> ListarAsistenciaMensualPorDniAsync(
+    string dni,
+    string mes,
+    string anio,
+    CancellationToken ct)
+    {
+        using var cn = new SqlConnection(_cs);
+
+        var p = new DynamicParameters();
+        p.Add("@dni", dni, DbType.String, size: 8);
+        p.Add("@mes", mes, DbType.String, size: 2);
+        p.Add("@anio", anio, DbType.String, size: 4);
+
+        var result = await cn.QueryAsync<AsistenciaMensualDto>(
+            new CommandDefinition(
+                commandText: "dbo.USP_asistencia_select_x_dni_mes_rango",
+                parameters: p,
+                commandType: CommandType.StoredProcedure,
+                cancellationToken: ct
+            )
+        );
+
+        return result.ToList();
+    }
+
 }

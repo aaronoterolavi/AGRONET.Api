@@ -19,4 +19,10 @@ public interface IMarcacionRepository
 
     Task<string> RegistrarAperturaAsync(AperturaMarcacionDto cmd, CancellationToken ct);
 
+    Task<IReadOnlyList<AsistenciaMensualDto>> ListarAsistenciaMensualPorDniAsync(
+      string dni,
+      string mes,
+      string anio,
+      CancellationToken ct);
+
 }
