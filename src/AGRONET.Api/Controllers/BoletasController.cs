@@ -64,4 +64,36 @@ public class BoletasController : ControllerBase
     {
         return User.FindFirst("dni")?.Value;
     }
+
+    [HttpGet("planilla-resumen")]
+    public async Task<IActionResult> ObtenerPlanillaResumen([FromQuery] string periodo)
+    {
+        if (string.IsNullOrWhiteSpace(periodo))
+            return BadRequest("El parámetro 'periodo' es obligatorio. Ejemplo: 2026-05.");
+
+        periodo = periodo.Trim();
+
+        if (periodo.Length != 7 || periodo[4] != '-')
+            return BadRequest("El parámetro 'periodo' debe tener el formato yyyy-MM. Ejemplo: 2026-05.");
+
+        var anio = periodo.Substring(0, 4);
+        var mes = periodo.Substring(5, 2);
+
+        if (!int.TryParse(anio, out _))
+            return BadRequest("El año del periodo no es válido.");
+
+        if (!int.TryParse(mes, out var mesNumero) || mesNumero < 1 || mesNumero > 12)
+            return BadRequest("El mes del periodo no es válido.");
+
+        var dni = ObtenerDniDesdeToken();
+
+        if (string.IsNullOrWhiteSpace(dni))
+            return Unauthorized("No se encontró el DNI en el token.");
+
+        var result = await _service.ObtenerPlanillaResumenAsync(dni, periodo);
+
+        return Ok(result);
+    }
+
+    
 }

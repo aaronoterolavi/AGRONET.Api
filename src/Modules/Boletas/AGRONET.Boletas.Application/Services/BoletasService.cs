@@ -34,5 +34,10 @@ namespace AGRONET.Boletas.Application.Services
         {
             await _repository.MarcarDescargadoAsync(iCodBoleta, dni);
         }
+
+        public async Task<PlanillaResumenResponseDto> ObtenerPlanillaResumenAsync(string dni, string periodo)
+        {
+            return await _repository.ObtenerPlanillaResumenAsync(dni, periodo);
+        }
     }
 }

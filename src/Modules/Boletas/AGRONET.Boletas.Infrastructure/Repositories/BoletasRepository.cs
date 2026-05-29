@@ -85,4 +85,32 @@ public class BoletasRepository : IBoletasRepository
             parameters,
             commandType: CommandType.StoredProcedure);
     }
+
+    public async Task<PlanillaResumenResponseDto> ObtenerPlanillaResumenAsync(string dni, string periodo)
+    {
+        using IDbConnection connection = new SqlConnection(_connectionString);
+
+        var parameters = new
+        {
+            num_documento = dni,
+            periodo
+        };
+
+        using var multi = await connection.QueryMultipleAsync(
+            "dbo.USP_Personal_planillas_resumen",
+            parameters,
+            commandType: CommandType.StoredProcedure);
+
+        var ingresos = (await multi.ReadAsync<PlanillaDetalleDto>()).ToList();
+        var descuentos = (await multi.ReadAsync<PlanillaDetalleDto>()).ToList();
+        var totales = await multi.ReadFirstOrDefaultAsync<PlanillaTotalDto>();
+
+        return new PlanillaResumenResponseDto
+        {
+            Ingresos = ingresos,
+            Descuentos = descuentos,
+            Totales = totales
+        };
+    }
+
 }

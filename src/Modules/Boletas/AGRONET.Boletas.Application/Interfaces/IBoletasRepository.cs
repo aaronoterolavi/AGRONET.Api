@@ -11,5 +11,6 @@ namespace AGRONET.Boletas.Application.Interfaces
         Task<BoletaArchivoDto?> ObtenerPorIdYDniAsync(int iCodBoleta, string dni);
         Task MarcarVistoAsync(int iCodBoleta, string dni);
         Task MarcarDescargadoAsync(int iCodBoleta, string dni);
+        Task<PlanillaResumenResponseDto> ObtenerPlanillaResumenAsync(string dni, string periodo);
     }
 }
