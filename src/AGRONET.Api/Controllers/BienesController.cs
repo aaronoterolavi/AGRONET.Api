@@ -2,6 +2,7 @@
 using AGRONET.Bienes.Application.DTOs.Bienes;
 using AGRONET.Bienes.Application.DTOs.Common;
 using AGRONET.Bienes.Application.DTOs.Licencias;
+using AGRONET.Bienes.Application.DTOs.Mantenimientos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -421,4 +422,217 @@ public class BienesController : ControllerBase
             return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al generar el reporte"));
         }
     }
+
+    // ========================= MANTENIMIENTOS =========================
+
+    /// <summary>
+    /// Lista mantenimientos de equipos con filtros y paginación
+    /// </summary>
+    [HttpGet("mantenimientos/listar")]
+    public async Task<IActionResult> ListarMantenimientos(
+        [FromQuery] int? ide_bien,
+        [FromQuery] int? ide_tipo_mantenimiento,
+        [FromQuery] string? flg_estado,
+        [FromQuery] DateTime? fecha_inicio,
+        [FromQuery] DateTime? fecha_fin,
+        [FromQuery] string? buscar,
+        [FromQuery] string? cod_area,
+        [FromQuery] int? ide_oficina,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] int pageNumber = 0,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var filtros = new MantenimientoListarFiltrosDto
+            {
+                ide_bien = ide_bien,
+                ide_tipo_mantenimiento = ide_tipo_mantenimiento,
+                flg_estado = flg_estado,
+                fecha_inicio = fecha_inicio,
+                fecha_fin = fecha_fin,
+                buscar = buscar,
+                cod_area = cod_area,
+                ide_oficina = ide_oficina,
+                page_size = pageSize,
+                page_number = pageNumber
+            };
+
+            var result = await _bienesService.ListarMantenimientosAsync(filtros, ct);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al listar mantenimientos");
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al listar los mantenimientos"));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene un mantenimiento por su ID
+    /// </summary>
+    [HttpGet("mantenimientos/{id:int}")]
+    public async Task<IActionResult> ObtenerMantenimientoPorId([FromRoute] int id, CancellationToken ct = default)
+    {
+        try
+        {
+            if (id <= 0)
+                return BadRequest(OperacionResultadoDto.Error("El ID es inválido"));
+
+            var result = await _bienesService.ObtenerMantenimientoPorIdAsync(id, ct);
+
+            if (result is null)
+                return NotFound(OperacionResultadoDto.Error("No se encontró el mantenimiento"));
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener mantenimiento por id {Id}", id);
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al obtener el mantenimiento"));
+        }
+    }
+
+    /// <summary>
+    /// Crea un nuevo mantenimiento de equipo
+    /// </summary>
+    [HttpPost("mantenimientos/crear")]
+    public async Task<IActionResult> CrearMantenimiento([FromBody] MantenimientoCrearRequestDto request)
+    {
+        try
+        {
+            var dni = User.FindFirstValue("dni");
+            if (string.IsNullOrWhiteSpace(dni))
+                return Unauthorized(OperacionResultadoDto.Error("Token sin claim 'dni'"));
+
+            // No pases CancellationToken si no es necesario, usa default
+            var result = await _bienesService.CrearMantenimientoAsync(dni, request, CancellationToken.None);
+
+            if (result.codigo != 1)
+                return UnprocessableEntity(result);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al crear mantenimiento");
+            return StatusCode(500, OperacionResultadoDto.Error($"Error al crear el mantenimiento: {ex.Message}"));
+        }
+    }
+
+    /// <summary>
+    /// Actualiza un mantenimiento existente
+    /// </summary>
+    [HttpPut("mantenimientos/actualizar")]
+    public async Task<IActionResult> ActualizarMantenimiento([FromBody] MantenimientoCrearRequestDto request, CancellationToken ct = default)
+    {
+        try
+        {
+            var dni = User.FindFirstValue("dni");
+            if (string.IsNullOrWhiteSpace(dni))
+                return Unauthorized(OperacionResultadoDto.Error("Token sin claim 'dni'"));
+
+            if (!request.ide_mantenimiento.HasValue || request.ide_mantenimiento.Value <= 0)
+                return BadRequest(OperacionResultadoDto.Error("El ID del mantenimiento es inválido"));
+
+            var result = await _bienesService.ActualizarMantenimientoAsync(dni, request, ct);
+
+            if (result.codigo != 1)
+                return UnprocessableEntity(result);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al actualizar mantenimiento {Id}", request.ide_mantenimiento);
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al actualizar el mantenimiento"));
+        }
+    }
+
+    /// <summary>
+    /// Elimina (soft delete) un mantenimiento
+    /// </summary>
+    [HttpPut("mantenimientos/eliminar/{id:int}")]
+    public async Task<IActionResult> EliminarMantenimiento([FromRoute] int id, CancellationToken ct = default)
+    {
+        try
+        {
+            if (id <= 0)
+                return BadRequest(OperacionResultadoDto.Error("El ID es inválido"));
+
+            var dni = User.FindFirstValue("dni");
+            if (string.IsNullOrWhiteSpace(dni))
+                return Unauthorized(OperacionResultadoDto.Error("Token sin claim 'dni'"));
+
+            var result = await _bienesService.EliminarMantenimientoAsync(id, dni, ct);
+
+            if (result.codigo != 1)
+                return UnprocessableEntity(result);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al eliminar mantenimiento {Id}", id);
+            return StatusCode(500, OperacionResultadoDto.Error($"Error al eliminar: {ex.Message}"));
+        }
+    }
+
+    /// <summary>
+    /// Obtiene estadísticas de mantenimiento
+    /// </summary>
+    [HttpGet("mantenimientos/estadisticas")]
+    public async Task<IActionResult> ObtenerEstadisticasMantenimiento(
+        [FromQuery] int? ide_bien = null,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _bienesService.ObtenerEstadisticasMantenimientoAsync(ide_bien, ct);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener estadísticas de mantenimiento");
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al obtener las estadísticas"));
+        }
+    }
+
+    /// <summary>
+    /// Lista los tipos de mantenimiento disponibles (catálogo)
+    /// </summary>
+    [HttpGet("mantenimientos/catalogos/tipos")]
+    public async Task<IActionResult> ListarTiposMantenimiento(CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _bienesService.ListarTiposMantenimientoAsync(ct);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al listar tipos de mantenimiento");
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al listar los tipos de mantenimiento"));
+        }
+    }
+
+    /// <summary>
+    /// Lista los estados de mantenimiento disponibles (catálogo)
+    /// </summary>
+    [HttpGet("mantenimientos/catalogos/estados")]
+    public async Task<IActionResult> ListarEstadosMantenimiento(CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _bienesService.ListarEstadosMantenimientoAsync(ct);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al listar estados de mantenimiento");
+            return StatusCode(500, OperacionResultadoDto.Error("Ocurrió un error al listar los estados de mantenimiento"));
+        }
+    }
+
+   
 }

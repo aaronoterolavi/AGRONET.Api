@@ -3,6 +3,8 @@ using AGRONET.Bienes.Application.DTOs.Bienes;
 using AGRONET.Bienes.Application.DTOs.Catalogos;
 using AGRONET.Bienes.Application.DTOs.Common;
 using AGRONET.Bienes.Application.DTOs.Licencias;
+using AGRONET.Bienes.Application.DTOs.Mantenimientos;
+
 using AGRONET.Bienes.Domain.Entities;
 
 namespace AGRONET.Bienes.Application.Services;
@@ -204,6 +206,8 @@ public class BienesService : IBienesService
             fec_instalacion = request.fec_instalacion,
             fec_expiracion = request.fec_expiracion,
             txt_notas = request.txt_notas,
+            txt_correo = request.txt_correo,
+            txt_contrasena = request.txt_contrasena,
             flg_activo = "SI",
             fec_registro = DateTime.Now
         };
@@ -223,5 +227,110 @@ public class BienesService : IBienesService
     public async Task<IReadOnlyList<LicenciaDto>> ReporteLicenciasPorVencerAsync(int dias, CancellationToken ct = default)
     {
         return await _repository.ReporteLicenciasPorVencerAsync(dias, ct);
+    }
+
+    // ========================= MANTENIMIENTOS =========================
+
+    public async Task<PagedResultDto<MantenimientoDto>> ListarMantenimientosAsync(MantenimientoListarFiltrosDto filtros, CancellationToken ct = default)
+    {
+        return await _repository.ListarMantenimientosAsync(filtros, ct);
+    }
+
+    public async Task<MantenimientoDto?> ObtenerMantenimientoPorIdAsync(int id, CancellationToken ct = default)
+    {
+        return await _repository.ObtenerMantenimientoPorIdAsync(id, ct);
+    }
+
+    public async Task<OperacionResultadoDto> CrearMantenimientoAsync(string dniUsuario, MantenimientoCrearRequestDto request, CancellationToken ct = default)
+    {
+        var mantenimiento = new MantenimientoEquipo
+        {
+            ide_bien = request.ide_bien,
+            ide_tipo_mantenimiento = request.ide_tipo_mantenimiento,
+            flg_estado = request.flg_estado,
+            fec_mantenimiento = request.fec_mantenimiento,
+            txt_descripcion = request.txt_descripcion,
+            txt_tecnico_responsable = request.txt_tecnico_responsable,
+            txt_observaciones = request.txt_observaciones,
+            num_costo = request.num_costo,
+            fec_inicio = request.fec_inicio,
+            fec_fin = request.fec_fin,
+            txt_recomendaciones = request.txt_recomendaciones,
+            flg_garantia = request.flg_garantia,
+            fec_proxima_mantenimiento = request.fec_proxima_mantenimiento,
+            usu_registro = dniUsuario
+        };
+
+        var id = await _repository.CrearMantenimientoAsync(mantenimiento, ct);
+
+        if (id > 0)
+            return OperacionResultadoDto.Ok("Mantenimiento registrado correctamente", new { ide_mantenimiento = id });
+
+        return OperacionResultadoDto.Error("No se pudo registrar el mantenimiento");
+    }
+
+    public async Task<OperacionResultadoDto> ActualizarMantenimientoAsync(string dniUsuario, MantenimientoCrearRequestDto request, CancellationToken ct = default)
+    {
+        if (!request.ide_mantenimiento.HasValue)
+            return OperacionResultadoDto.Error("El ID del mantenimiento es requerido");
+
+        var mantenimiento = new MantenimientoEquipo
+        {
+            ide_mantenimiento = request.ide_mantenimiento.Value,
+            ide_bien = request.ide_bien,
+            ide_tipo_mantenimiento = request.ide_tipo_mantenimiento,
+            flg_estado = request.flg_estado,
+            fec_mantenimiento = request.fec_mantenimiento,
+            txt_descripcion = request.txt_descripcion,
+            txt_tecnico_responsable = request.txt_tecnico_responsable,
+            txt_observaciones = request.txt_observaciones,
+            num_costo = request.num_costo,
+            fec_inicio = request.fec_inicio,
+            fec_fin = request.fec_fin,
+            txt_recomendaciones = request.txt_recomendaciones,
+            flg_garantia = request.flg_garantia,
+            fec_proxima_mantenimiento = request.fec_proxima_mantenimiento,
+            usu_modificacion = dniUsuario
+        };
+
+        var result = await _repository.ActualizarMantenimientoAsync(mantenimiento, ct);
+
+        if (result)
+            return OperacionResultadoDto.Ok("Mantenimiento actualizado correctamente", new { ide_mantenimiento = mantenimiento.ide_mantenimiento });
+
+        return OperacionResultadoDto.Error("No se pudo actualizar el mantenimiento");
+    }
+
+    public async Task<OperacionResultadoDto> EliminarMantenimientoAsync(int id, string dniUsuario, CancellationToken ct = default)
+    {
+        try
+        {
+            var result = await _repository.EliminarMantenimientoAsync(id, dniUsuario, ct);
+
+            if (result)
+                return OperacionResultadoDto.Ok("Mantenimiento eliminado correctamente");
+
+            return OperacionResultadoDto.Error("No se pudo eliminar el mantenimiento");
+        }
+        catch (Exception ex)
+        {
+           // _logger.LogError(ex, "Error en EliminarMantenimientoAsync {Id}", id);
+            return OperacionResultadoDto.Error($"Error al eliminar: {ex.Message}");
+        }
+    }
+
+    public async Task<MantenimientoEstadisticasDto> ObtenerEstadisticasMantenimientoAsync(int? ide_bien = null, CancellationToken ct = default)
+    {
+        return await _repository.ObtenerEstadisticasMantenimientoAsync(ide_bien, ct);
+    }
+
+    public async Task<IReadOnlyList<TipoMantenimientoDto>> ListarTiposMantenimientoAsync(CancellationToken ct = default)
+    {
+        return await _repository.ListarTiposMantenimientoAsync(ct);
+    }
+
+    public async Task<IReadOnlyList<EstadoMantenimientoDto>> ListarEstadosMantenimientoAsync(CancellationToken ct = default)
+    {
+        return await _repository.ListarEstadosMantenimientoAsync(ct);
     }
 }

@@ -1,12 +1,13 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using Dapper;
-using Microsoft.Extensions.Configuration;
-using AGRONET.Bienes.Application.Contracts;
+﻿using AGRONET.Bienes.Application.Contracts;
 using AGRONET.Bienes.Application.DTOs.Bienes;
 using AGRONET.Bienes.Application.DTOs.Common;
 using AGRONET.Bienes.Application.DTOs.Licencias;
+using AGRONET.Bienes.Application.DTOs.Mantenimientos;
 using AGRONET.Bienes.Domain.Entities;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace AGRONET.Bienes.Infrastructure.Persistence;
 
@@ -461,6 +462,8 @@ public sealed class BienesRepository : IBienesRepository
             p.Add("@fechaInstalacion", licencia.fec_instalacion);
             p.Add("@fechaExpiracion", licencia.fec_expiracion);
             p.Add("@notas", licencia.txt_notas);
+            p.Add("@correo", licencia.txt_correo);
+            p.Add("@contrasena", licencia.txt_contrasena);
             p.Add("@id", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
             await cn.ExecuteAsync(
@@ -534,4 +537,272 @@ public sealed class BienesRepository : IBienesRepository
             throw new Exception($"Error al generar reporte de licencias por vencer: {ex.Message}");
         }
     }
+
+    // ========================= MANTENIMIENTOS =========================
+
+    public async Task<PagedResultDto<MantenimientoDto>> ListarMantenimientosAsync(MantenimientoListarFiltrosDto filtros, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var p = new DynamicParameters();
+            p.Add("@Start", filtros.page_number * filtros.page_size);
+            p.Add("@Length", filtros.page_size);
+            p.Add("@Draw", 1);
+            p.Add("@ide_bien", filtros.ide_bien);
+            p.Add("@ide_tipo_mantenimiento", filtros.ide_tipo_mantenimiento);
+            p.Add("@flg_estado", filtros.flg_estado);
+            p.Add("@fecha_inicio", filtros.fecha_inicio);
+            p.Add("@fecha_fin", filtros.fecha_fin);
+            p.Add("@buscar", filtros.buscar);
+            p.Add("@cod_area", filtros.cod_area);
+            p.Add("@ide_oficina", filtros.ide_oficina);
+
+            var result = await cn.QueryAsync<MantenimientoDto>(
+                new CommandDefinition(
+                    commandText: "dbo.SGBL_SP_R_LISTAR_MANTENIMIENTOS",
+                    parameters: p,
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: ct
+                )
+            );
+
+            var data = result.ToList();
+            var totalCount = data.FirstOrDefault()?.recordsTotal ?? 0;
+
+            // Limpiar las propiedades de paginación de cada item
+            foreach (var item in data)
+            {
+                item.draw = 0;
+                item.recordsTotal = 0;
+                item.recordsFiltered = 0;
+            }
+
+            return new PagedResultDto<MantenimientoDto>
+            {
+                items = data,
+                total_count = totalCount,
+                page_number = filtros.page_number,
+                page_size = filtros.page_size
+            };
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al listar mantenimientos: {ex.Message}");
+        }
+    }
+    public async Task<MantenimientoDto?> ObtenerMantenimientoPorIdAsync(int id, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var p = new DynamicParameters();
+            p.Add("@ide_mantenimiento", id);
+
+            var result = await cn.QueryFirstOrDefaultAsync<MantenimientoDto>(
+                new CommandDefinition(
+                    commandText: "dbo.SGBL_SP_R_OBTENER_MANTENIMIENTO",
+                    parameters: p,
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: ct
+                )
+            );
+
+            return result;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al obtener mantenimiento por ID: {ex.Message}");
+        }
+    }
+
+    public async Task<int> CrearMantenimientoAsync(MantenimientoEquipo mantenimiento, CancellationToken ct = default)
+    {
+        try
+        {
+            using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var p = new DynamicParameters();
+            p.Add("@ide_mantenimiento", null);
+            p.Add("@ide_bien", mantenimiento.ide_bien);
+            p.Add("@ide_tipo_mantenimiento", mantenimiento.ide_tipo_mantenimiento);
+            p.Add("@flg_estado", mantenimiento.flg_estado);
+            p.Add("@fec_mantenimiento", mantenimiento.fec_mantenimiento);
+            p.Add("@txt_descripcion", mantenimiento.txt_descripcion);
+            p.Add("@txt_tecnico_responsable", mantenimiento.txt_tecnico_responsable);
+            p.Add("@txt_observaciones", mantenimiento.txt_observaciones);
+            p.Add("@num_costo", mantenimiento.num_costo);
+            p.Add("@fec_inicio", mantenimiento.fec_inicio);
+            p.Add("@fec_fin", mantenimiento.fec_fin);
+            p.Add("@txt_recomendaciones", mantenimiento.txt_recomendaciones);
+            p.Add("@flg_garantia", mantenimiento.flg_garantia ?? "N");
+            p.Add("@fec_proxima_mantenimiento", mantenimiento.fec_proxima_mantenimiento);
+            p.Add("@usu_registro", mantenimiento.usu_registro);
+
+            // Ejecutar y leer el resultado
+            var result = await cn.QueryFirstOrDefaultAsync<dynamic>(
+                "dbo.SGBL_SP_C_GUARDAR_MANTENIMIENTO",
+                p,
+                commandType: CommandType.StoredProcedure,
+                commandTimeout: 60
+            );
+
+            if (result != null)
+            {
+                return (int)result.ide_mantenimiento;
+            }
+
+            return 0;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error SQL al crear mantenimiento: {ex.Message}");
+        }
+    }
+
+    public async Task<bool> ActualizarMantenimientoAsync(MantenimientoEquipo mantenimiento, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var p = new DynamicParameters();
+            p.Add("@ide_mantenimiento", mantenimiento.ide_mantenimiento);
+            p.Add("@ide_bien", mantenimiento.ide_bien);
+            p.Add("@ide_tipo_mantenimiento", mantenimiento.ide_tipo_mantenimiento);
+            p.Add("@flg_estado", mantenimiento.flg_estado);
+            p.Add("@fec_mantenimiento", mantenimiento.fec_mantenimiento);
+            p.Add("@txt_descripcion", mantenimiento.txt_descripcion);
+            p.Add("@txt_tecnico_responsable", mantenimiento.txt_tecnico_responsable);
+            p.Add("@txt_observaciones", mantenimiento.txt_observaciones);
+            p.Add("@num_costo", mantenimiento.num_costo);
+            p.Add("@fec_inicio", mantenimiento.fec_inicio);
+            p.Add("@fec_fin", mantenimiento.fec_fin);
+            p.Add("@txt_recomendaciones", mantenimiento.txt_recomendaciones);
+            p.Add("@flg_garantia", mantenimiento.flg_garantia ?? "N");
+            p.Add("@fec_proxima_mantenimiento", mantenimiento.fec_proxima_mantenimiento);
+            p.Add("@usu_modificacion", mantenimiento.usu_modificacion);
+
+            var result = await cn.QueryFirstOrDefaultAsync<dynamic>(
+                "dbo.SGBL_SP_U_MANTENIMIENTO",
+                p,
+                commandType: CommandType.StoredProcedure,
+                commandTimeout: 60
+            );
+
+            return result != null && result.codigo == 1;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al actualizar mantenimiento: {ex.Message}");
+        }
+    }
+
+    public async Task<bool> EliminarMantenimientoAsync(int ide_mantenimiento, string usu_modificacion, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var p = new DynamicParameters();
+            p.Add("@ide_mantenimiento", ide_mantenimiento);
+            p.Add("@usu_modificacion", usu_modificacion);
+
+            // Leer el resultado del SELECT
+            var result = await cn.QueryFirstOrDefaultAsync<dynamic>(
+                "dbo.SGBL_SP_D_ELIMINAR_MANTENIMIENTO",
+                p,
+                commandType: CommandType.StoredProcedure,
+                commandTimeout: 60
+            );
+
+            return result != null && result.codigo == 1;
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al eliminar mantenimiento: {ex.Message}");
+        }
+    }
+
+    public async Task<MantenimientoEstadisticasDto> ObtenerEstadisticasMantenimientoAsync(int? ide_bien = null, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var p = new DynamicParameters();
+            p.Add("@ide_bien", ide_bien);
+
+            var result = await cn.QueryFirstOrDefaultAsync<MantenimientoEstadisticasDto>(
+                new CommandDefinition(
+                    commandText: "dbo.SGBL_SP_R_ESTADISTICAS_MANTENIMIENTO",
+                    parameters: p,
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: ct
+                )
+            );
+
+            return result ?? new MantenimientoEstadisticasDto();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al obtener estadísticas de mantenimiento: {ex.Message}");
+        }
+    }
+
+    public async Task<IReadOnlyList<TipoMantenimientoDto>> ListarTiposMantenimientoAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var tipos = await cn.QueryAsync<TipoMantenimientoDto>(
+                new CommandDefinition(
+                    commandText: "dbo.SGBL_SP_R_TIPOS_MANTENIMIENTO",
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: ct
+                )
+            );
+
+            return tipos.ToList();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al listar tipos de mantenimiento: {ex.Message}");
+        }
+    }
+
+    public async Task<IReadOnlyList<EstadoMantenimientoDto>> ListarEstadosMantenimientoAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            await using var cn = new SqlConnection(_cs);
+            await cn.OpenAsync(ct);
+
+            var estados = await cn.QueryAsync<EstadoMantenimientoDto>(
+                new CommandDefinition(
+                    commandText: "dbo.SGBL_SP_R_ESTADOS_MANTENIMIENTO",
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: ct
+                )
+            );
+
+            return estados.ToList();
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception($"Error al listar estados de mantenimiento: {ex.Message}");
+        }
+    }
+
+
 }

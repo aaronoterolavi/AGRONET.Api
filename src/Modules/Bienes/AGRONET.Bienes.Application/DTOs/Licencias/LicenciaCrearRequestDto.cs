@@ -12,6 +12,8 @@ public class LicenciaCrearRequestDto
     public int ide_software { get; set; }
     public string txt_num_licencia { get; set; } = string.Empty;
     public DateTime? fec_instalacion { get; set; }
-    public DateTime fec_expiracion { get; set; }
+    public DateTime? fec_expiracion { get; set; }
     public string? txt_notas { get; set; }
+    public string? txt_correo { get; set; }
+    public string? txt_contrasena { get; set; }
 }

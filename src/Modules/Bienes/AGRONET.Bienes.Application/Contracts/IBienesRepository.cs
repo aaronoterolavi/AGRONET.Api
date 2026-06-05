@@ -1,6 +1,7 @@
 ﻿using AGRONET.Bienes.Application.DTOs.Bienes;
 using AGRONET.Bienes.Application.DTOs.Common;
 using AGRONET.Bienes.Application.DTOs.Licencias;
+using AGRONET.Bienes.Application.DTOs.Mantenimientos;
 using AGRONET.Bienes.Domain.Entities;
 using System.Text.RegularExpressions;
 
@@ -30,4 +31,15 @@ public interface IBienesRepository
     Task<int> CrearLicenciaAsync(Licencia licencia, CancellationToken ct = default);
     Task<bool> EliminarLicenciaAsync(int id, CancellationToken ct = default);
     Task<IReadOnlyList<LicenciaDto>> ReporteLicenciasPorVencerAsync(int dias, CancellationToken ct = default);
+
+    // ========================= MANTENIMIENTOS =========================
+    Task<PagedResultDto<MantenimientoDto>> ListarMantenimientosAsync(MantenimientoListarFiltrosDto filtros, CancellationToken ct = default);
+    Task<MantenimientoDto?> ObtenerMantenimientoPorIdAsync(int id, CancellationToken ct = default);
+    Task<int> CrearMantenimientoAsync(MantenimientoEquipo mantenimiento, CancellationToken ct = default);
+    Task<bool> ActualizarMantenimientoAsync(MantenimientoEquipo mantenimiento, CancellationToken ct = default);
+    Task<bool> EliminarMantenimientoAsync(int ide_mantenimiento, string usu_modificacion, CancellationToken ct = default);
+    Task<MantenimientoEstadisticasDto> ObtenerEstadisticasMantenimientoAsync(int? ide_bien = null, CancellationToken ct = default);
+    Task<IReadOnlyList<TipoMantenimientoDto>> ListarTiposMantenimientoAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<EstadoMantenimientoDto>> ListarEstadosMantenimientoAsync(CancellationToken ct = default);
+
 }
