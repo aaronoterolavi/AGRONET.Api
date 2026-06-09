@@ -37,6 +37,10 @@
     <Project Path="src/Modules/Menus/AGRONET.Menus.Domain/AGRONET.Menus.Domain.csproj" Id="fcbb228b-45de-41e4-bf56-9d1478e10d9f" />
     <Project Path="src/Modules/Menus/AGRONET.Menus.Infrastructure/AGRONET.Menus.Infrastructure.csproj" Id="116821ad-4218-48ea-ba19-f1371c1ee0af" />
   </Folder>
+  <Folder Name="/src/Modules/Notificaciones/">
+    <Project Path="src/Modules/Notificaciones/AGRONET.Notificaciones.Application/AGRONET.Notificaciones.Application.csproj" Id="44c96635-8ed9-445c-a8f9-3c63b2fcd909" />
+    <Project Path="src/Modules/Notificaciones/AGRONET.Notificaciones.Infrastructure/AGRONET.Notificaciones.Infrastructure.csproj" Id="1d4ab455-b887-403d-b700-97c76b91ccde" />
+  </Folder>
   <Folder Name="/src/Modules/Roles/">
     <Project Path="src/Modules/Roles/AGRONET.Roles.Application/AGRONET.Roles.Application.csproj" Id="dc5aa7b1-a3ae-4e8e-9b37-1fbc0c651755" />
     <Project Path="src/Modules/Roles/AGRONET.Roles.Domain/AGRONET.Roles.Domain.csproj" Id="89f4b42f-3e97-4537-af15-9eddacafd6fa" />

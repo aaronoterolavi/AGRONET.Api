@@ -7,6 +7,7 @@ using AGRONET.Roles.Infrastructure;
 using AGRONET.Users.Infrastructure;
 using AGRONET.Catalogos.Infrastructure;
 using AGRONET.Boletas.Infrastructure;
+using AGRONET.Notificaciones.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -62,6 +63,7 @@ builder.Services.AddUsersModule();
 builder.Services.AddCatalogosModule();
 builder.Services.AddBoletasModule();
 builder.Services.AddBienesModule();
+builder.Services.AddNotificacionesModule();
 
 var jwt = builder.Configuration.GetSection("Jwt");
 var key = jwt["SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey no configurado.");
